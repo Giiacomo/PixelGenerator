@@ -1,10 +1,7 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
-import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.helpers.TaskScheduler;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +19,6 @@ public class GeneratorManager {
         }
     }
 
-    // Remove a generator and cancel its task
     public static void removeGenerator(GeneratorBlock generator) {
         if (generators.containsKey(generator.getBlock())) {
             generator.cancelTask();
