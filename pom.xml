@@ -75,7 +75,12 @@
     </repositories>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.2.12.Final</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
