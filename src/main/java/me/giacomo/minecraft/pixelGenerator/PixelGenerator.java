@@ -1,6 +1,7 @@
 package me.giacomo.minecraft.pixelGenerator;
 
 import me.giacomo.minecraft.pixelGenerator.commands.MainPluginCommand;
+import me.giacomo.minecraft.pixelGenerator.db.GeneratorDB;
 import me.giacomo.minecraft.pixelGenerator.events.chat.TabComplete;
 import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorPlaceListener;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
@@ -17,6 +18,8 @@ import java.util.Map;
 
 public final class PixelGenerator extends JavaPlugin {
 
+
+    private GeneratorDB generatorDB;
     private static PixelGenerator instance;
     private static GeneratorManager manager;
     // chat messages
@@ -32,8 +35,14 @@ public final class PixelGenerator extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        manager = new GeneratorManager();
         getLogger().info("Plugin enabled! Version: " + getDescription().getVersion());
+
+        try {
+            generatorDB = new GeneratorDB(getDataFolder().getAbsolutePath() + "/data.db");
+        } catch (Exception e) {
+            getLogger().severe("[PixelGenerator] Could not load db!");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
 
         // load config.yml (generate one if not there)
         loadConfiguration();
@@ -66,6 +75,10 @@ public final class PixelGenerator extends JavaPlugin {
 
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new GeneratorPlaceListener(), this);
+    }
+
+    public GeneratorDB getGeneratorDB() {
+        return generatorDB;
     }
 
     // load the config file and apply settings

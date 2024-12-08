@@ -10,7 +10,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
-public class GeneratorBlock implements Generator {
+public class GeneratorBlock {
 
     private Block block;
     private Material itemToGenerate;
@@ -34,24 +34,20 @@ public class GeneratorBlock implements Generator {
         }
     }
 
-    @Override
     public void generateItem() {
         Bukkit.getConsoleSender().sendMessage("Generating item at " + block.getLocation() + " with quantity " + quantity);
 
         this.block.getWorld().dropItemNaturally(block.getLocation().add(0,1,0), new ItemStack(itemToGenerate, quantity));
     }
 
-    @Override
     public void onPlayerInteract(Player player, Block block) {
 
     }
 
-    @Override
     public int getInterval() {
         return interval;
     }
 
-    @Override
     public Block getBlock() {
         return block;
     }

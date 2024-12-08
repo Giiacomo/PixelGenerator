@@ -33,7 +33,7 @@ public class GeneratorPlaceListener implements Listener {
                 Integer quantity = meta.getPersistentDataContainer().get(GeneratorItem.quantityKey, PersistentDataType.INTEGER);
                 Utilities.informPlayer(event.getPlayer(), "You placed a" + "" + " generator");
                 GeneratorBlock generator = new GeneratorBlock(event.getBlockPlaced(), generatedItem, interval, quantity);
-                GeneratorManager.addGenerator(generator);
+                GeneratorManager.addGenerator(generator, player);
             }
         }
     }
