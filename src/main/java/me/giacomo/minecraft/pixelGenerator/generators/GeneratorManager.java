@@ -1,31 +1,55 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
+import me.giacomo.minecraft.pixelGenerator.helpers.TaskScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GeneratorManager {
-    private static List<GeneratorBlock> generators = new ArrayList<>();
+    private static Map<Block, GeneratorBlock> generators = new HashMap<>();
 
     public static void addGenerator(GeneratorBlock generator) {
-        generators.add(generator);
-        scheduleGenerationForGenerator(generator);
+        if (!generators.containsKey(generator.getBlock())) {
+
+            generators.put(generator.getBlock(), generator);
+            TaskScheduler scheduler = getScheduleGenerationTask(generator);
+
+            generator.setTask(scheduler.schedule());
+        }
     }
 
-    public void removeGenerator(GeneratorBlock generator) {
-        generators.remove(generator);
+    // Remove a generator and cancel its task
+    public static void removeGenerator(GeneratorBlock generator) {
+        if (generators.containsKey(generator.getBlock())) {
+            generator.cancelTask();
+            generators.remove(generator.getBlock());
+        }
     }
 
+    public static void removeGeneratorByBlock(Block block) {
+        GeneratorBlock generator = findByBlock(block);
+        if (generator != null) {
+            removeGenerator(generator);
+        }
+    }
 
-    public static void scheduleGenerationForGenerator(GeneratorBlock generator) {
-        int interval = generator.getInterval();
-        Bukkit.getConsoleSender().sendMessage(String.valueOf(interval));
-        Bukkit.getScheduler().runTaskTimer(PixelGenerator.getInstance(), () -> { //new runnable replaced with lambda
-            Bukkit.getConsoleSender().sendMessage(String.valueOf(interval));
-            generator.generateItem();
-        }, 0L, 20L * interval);
+    public static GeneratorBlock findByBlock(Block block) {
+        return generators.get(block);
+    }
+
+    public static TaskScheduler getScheduleGenerationTask(GeneratorBlock generator) {
+        Runnable task = generator::generateItem;
+        long delay = 0L;
+        long interval = 20L * generator.getInterval();
+
+        return new TaskScheduler(task, delay, interval);
+    }
+
+    public static boolean isGenerator(Block block) {
+        return generators.containsKey(block);
     }
 }

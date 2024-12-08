@@ -6,6 +6,7 @@ import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorItem;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,7 +27,6 @@ public class GeneratorCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player))
             return true;
-
         Player player = (Player) sender;
         if (args.length != 4) {
             Utilities.warnPlayer(sender, command.getUsage());
