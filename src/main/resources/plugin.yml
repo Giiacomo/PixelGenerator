@@ -1,0 +1,18 @@
+name: PixelGenerator
+version: '1.0-SNAPSHOT'
+main: me.giacomo.minecraft.pixelGenerator.PixelGenerator
+api-version: '1.21'
+commands:
+  template:
+    description: Main command for the PixelGenerator plugin
+    usage: /<command> <help|info|reload>
+    permission: template.user
+    permission-message: You do not have permission to use this command!
+  generator:
+      description: Create and manage item generators
+      usage: /generator <blockName> <itemName> <interval> <quantity>
+      permission: pixelgenerator.command.generator
+permissions:
+  pixelgenerator.command.generator:
+    description: Allows the use of the /generator command
+    default: op

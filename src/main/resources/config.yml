@@ -1,0 +1,9 @@
+# Configurazione del plugin PixelGenerator
+plugin-prefix: "&7[&aPixel&fGenerator&7] &8"
+custom-setting: false
+
+# Messaggi configurabili
+messages:
+  welcome: "Benvenuto nel server!"
+  no-permission: "&cNon hai i permessi per eseguire questo comando."
+  error: "&cSi è verificato un errore. Contatta l'amministratore."
