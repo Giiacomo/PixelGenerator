@@ -51,6 +51,24 @@ public class GeneratorDB {
         saveGenerator(x, y, z, world, material, quantity, interval);
     }
 
+    public void updateGeneratorPosition(GeneratorBlock generatorBlock, int newX, int newY, int newZ) throws SQLException {
+        String sql = "UPDATE generators SET x = ?, y = ?, z = ? WHERE x = ? AND y = ? AND z = ? AND world = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, newX);
+            stmt.setInt(2, newY);
+            stmt.setInt(3, newZ);
+
+            stmt.setInt(4, generatorBlock.getBlock().getX());
+            stmt.setInt(5, generatorBlock.getBlock().getY());
+            stmt.setInt(6, generatorBlock.getBlock().getZ());
+            stmt.setString(7, generatorBlock.getBlock().getWorld().getName());
+
+            stmt.executeUpdate();
+        }
+    }
+
+
     public void removeGenerator(GeneratorBlock generatorBlock) throws SQLException {
         String sql = "DELETE FROM generators WHERE x = ? AND y = ? AND z = ? AND world = ?";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {

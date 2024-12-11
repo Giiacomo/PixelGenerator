@@ -1,19 +1,14 @@
 package me.giacomo.minecraft.pixelGenerator.commands;
 
-import jdk.jshell.execution.Util;
 import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorItem;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
-import me.giacomo.minecraft.pixelGenerator.helpers.Message;
+import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 public class GeneratorCommand implements CommandExecutor {
@@ -44,7 +39,7 @@ public class GeneratorCommand implements CommandExecutor {
             case "clear" -> handleClearCommand(player, args);
             case "save" -> handleSaveCommand(player);
             case "debug" -> handleDebugCommand(player);
-            default -> Utilities.warnPlayer(player, Message.UNKNOWN_SUBCOMMAND.getValue() + ": " + args[0].toLowerCase());
+            default -> Utilities.warnPlayer(player, Messages.UNKNOWN_SUBCOMMAND.getValue() + ": " + args[0].toLowerCase());
         }
 
         return true;
@@ -72,18 +67,18 @@ public class GeneratorCommand implements CommandExecutor {
             generatorItem = GeneratorItem.createGeneratorItem(blockName, itemName, interval, quantity);
 
         } catch (NumberFormatException e) {
-            Utilities.warnPlayer(player, Message.PARAMETER_INTEGER_EXCEPTION.getValue());
+            Utilities.warnPlayer(player, Messages.PARAMETER_INTEGER_EXCEPTION.getValue());
         } catch (MaterialNotBlockException | IllegalArgumentException e) {
             Utilities.warnPlayer(player, e.getMessage());
         } catch (Exception e) {
-            Utilities.warnPlayer(player, Message.DEFAULT_ERROR.getValue());
+            Utilities.warnPlayer(player, Messages.DEFAULT_ERROR.getValue());
         }
 
         if (generatorItem == null) {
             return;
         }
         player.getInventory().addItem(generatorItem);
-        Utilities.informPlayer(player, Message.PLAYER_RECEIVE_GENERATOR.getValue());
+        Utilities.informPlayer(player, Messages.PLAYER_RECEIVE_GENERATOR.getValue());
     }
 
     private void handleListCommand(Player player) {
@@ -152,6 +147,6 @@ public class GeneratorCommand implements CommandExecutor {
     }
 
     private void sendNoPermission(Player player) {
-        Utilities.warnPlayer(player, Message.NO_PERMISSION.getValue());
+        Utilities.warnPlayer(player, Messages.NO_PERMISSION.getValue());
     }
 }

@@ -3,6 +3,8 @@ package me.giacomo.minecraft.pixelGenerator.helpers;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
+import me.giacomo.minecraft.pixelGenerator.helpers.enums.ActionSounds;
+import me.giacomo.minecraft.pixelGenerator.helpers.enums.Sounds;
 import org.bukkit.entity.Player;
 import com.google.common.io.ByteStreams;
 import org.bukkit.ChatColor;
@@ -79,7 +81,7 @@ public final class Utilities {
     }
 
     public static void warnPlayer(CommandSender sender, List<String> messages) {
-        if (sender instanceof Player) { Player player = (Player) sender; playSound(ActionSound.ERROR, player); }
+        if (sender instanceof Player) { Player player = (Player) sender; playSound(ActionSounds.ERROR, player); }
         for (String message : messages) sender.sendMessage(PixelGenerator.prefix + ChatColor.RESET + ChatColor.RED + message);
     }
     public static void warnPlayer(CommandSender sender, String message) {
@@ -97,29 +99,29 @@ public final class Utilities {
         return player.getTargetBlock(TRANSPARENT, 120);
     }
 
-    public static void playSound(ActionSound sound, Player player) {
+    public static void playSound(ActionSounds sound, Player player) {
 
         switch (sound) {
             case OPEN:
-                Sound.CHEST_OPEN.playSound(player);
+                Sounds.CHEST_OPEN.playSound(player);
                 break;
             case MODIFY:
-                Sound.ANVIL_USE.playSound(player);
+                Sounds.ANVIL_USE.playSound(player);
                 break;
             case SELECT:
-                Sound.LEVEL_UP.playSound(player);
+                Sounds.LEVEL_UP.playSound(player);
                 break;
             case CLICK:
-                Sound.CLICK.playSound(player);
+                Sounds.CLICK.playSound(player);
                 break;
             case POP:
-                Sound.CHICKEN_EGG_POP.playSound(player);
+                Sounds.CHICKEN_EGG_POP.playSound(player);
                 break;
             case BREAK:
-                Sound.ANVIL_LAND.playSound(player);
+                Sounds.ANVIL_LAND.playSound(player);
                 break;
             case ERROR:
-                Sound.BAT_DEATH.playSound(player);
+                Sounds.BAT_DEATH.playSound(player);
                 break;
         }
 

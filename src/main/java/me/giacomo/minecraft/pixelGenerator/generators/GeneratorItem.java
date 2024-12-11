@@ -1,12 +1,9 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
-import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
-import me.giacomo.minecraft.pixelGenerator.helpers.Message;
-import org.bukkit.Bukkit;
+import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,25 +22,25 @@ public class GeneratorItem {
         Material itemMaterial = Material.getMaterial(itemName);
 
         if (blockMaterial == null) {
-            throw new IllegalArgumentException(Message.INVALID_BLOCK_EXCEPTION.getValue() + ": " + block);
+            throw new IllegalArgumentException(Messages.INVALID_BLOCK_EXCEPTION.getValue() + ": " + block);
         }
 
         if (itemMaterial == null) {
-            throw new IllegalArgumentException(Message.INVALID_ITEM_EXCEPTION.getValue() + ": " + itemName);
+            throw new IllegalArgumentException(Messages.INVALID_ITEM_EXCEPTION.getValue() + ": " + itemName);
         }
 
         if (interval <= 0 || quantity <= 0)
-            throw new IllegalArgumentException(Message.PARAMETER_POSITIVE_INTEGER_EXCEPTION.getValue());
+            throw new IllegalArgumentException(Messages.PARAMETER_POSITIVE_INTEGER_EXCEPTION.getValue());
 
         if (!blockMaterial.isBlock())
-            throw new MaterialNotBlockException(Message.IS_NOT_A_BLOCK_EXCEPTION.getValue() + ": "  + blockMaterial.name());
+            throw new MaterialNotBlockException(Messages.IS_NOT_A_BLOCK_EXCEPTION.getValue() + ": "  + blockMaterial.name());
 
 
         ItemStack item = new ItemStack(blockMaterial);
         ItemMeta meta = item.getItemMeta();
 
         if (meta != null) {
-            meta.setDisplayName(Message.ITEM_GENERATOR_NAME.getValue());
+            meta.setDisplayName(Messages.ITEM_GENERATOR_NAME.getValue());
             meta.setLore(Arrays.asList("§7Generates " + quantity + " " + itemName.toLowerCase().replace('_', ' ') + " every " + interval + " seconds", "§7Right-click to place"));
             meta.getPersistentDataContainer().set(itemKey, PersistentDataType.STRING, itemName);
             meta.getPersistentDataContainer().set(intervalKey, PersistentDataType.INTEGER, interval);

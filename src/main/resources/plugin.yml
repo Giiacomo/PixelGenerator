@@ -8,18 +8,21 @@ commands:
       usage: /generator <blockName> <itemName> <interval> <quantity>
       permission: pixelgenerator.command.generator
 permissions:
-  pixelgenerator.use:
-    description: Allows using generator commands.
+  pixelgenerator.place:
+    description: Allow placing generator blocks.
     default: true
-  pixelgenerator.create:
+  pixelgenerator.break:
+    description: Allow destroying generator blocks.
+    default: true
+  pixelgenerator.admin.create:
     description: Allows creating generators.
-    default: true
-  pixelgenerator.list:
+    default: false
+  pixelgenerator.admin.list:
     description: Allows listing generators.
-    default: true
-  pixelgenerator.remove:
-    description: Allows removing generators.
-    default: true
+    default: false
+  pixelgenerator.admin.debug:
+    description: Allows enabling debug mode.
+    default: false
   pixelgenerator.admin.*:
     description: Grants access to all admin commands.
     default: op

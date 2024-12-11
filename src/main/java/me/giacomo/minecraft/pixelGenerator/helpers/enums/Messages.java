@@ -1,8 +1,8 @@
-package me.giacomo.minecraft.pixelGenerator.helpers;
+package me.giacomo.minecraft.pixelGenerator.helpers.enums;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 
-public enum Message {
+public enum Messages {
     ITEM_GENERATOR_NAME("ITEM_GENERATOR_NAME"),
     PLAYER_PLACE_GENERATOR("PLAYER_PLACE_GENERATOR"),
     PLAYER_DESTROY_GENERATOR("PLAYER_DESTROY_GENERATOR"),
@@ -18,7 +18,7 @@ public enum Message {
 
     private final String value;
 
-    Message(String value) {
+    Messages(String value) {
         this.value = value;
     }
 

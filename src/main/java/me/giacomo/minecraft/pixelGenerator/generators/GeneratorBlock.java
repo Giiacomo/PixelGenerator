@@ -70,8 +70,6 @@ public class GeneratorBlock {
         this.quantity = quantity;
     }
 
-
-
     public void setInterval(int interval) {
         this.interval = interval;
     }

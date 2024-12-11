@@ -47,7 +47,6 @@ public final class PixelGenerator extends JavaPlugin {
 
         loadLangFile();
 
-
         registerCommands();
         registerEvents();
 
@@ -77,19 +76,16 @@ public final class PixelGenerator extends JavaPlugin {
         return generatorDB;
     }
 
-    // load the config file and apply settings
     public void loadConfiguration() {
         saveDefaultConfig();
 
         FileConfiguration config = this.getConfig();
         prefix = ChatColor.translateAlternateColorCodes('&', config.getString("plugin-prefix"));
-        customSetting = config.getBoolean("custom-setting");
 
         getLogger().info(consolePrefix + "Settings Reloaded from config");
     }
 
 
-    // load the language file and apply settings
     public void loadLangFile() {
         File langFile = new File(getDataFolder(), "lang.yml");
         FileConfiguration langFileConfig = new YamlConfiguration();
@@ -103,7 +99,6 @@ public final class PixelGenerator extends JavaPlugin {
         }
     }
 
-    // reload all plugin assets
     public static void reload() {
         getInstance().reloadConfig();
         getInstance().loadConfiguration();
@@ -111,7 +106,6 @@ public final class PixelGenerator extends JavaPlugin {
         Bukkit.getLogger().info("configuration, values, and language settings reloaded");
     }
 
-    // getters
     public static String getPhrase(String key) {
         return phrases.get(key);
     }

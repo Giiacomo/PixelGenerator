@@ -19,6 +19,11 @@ import java.util.function.Consumer;
 public class GeneratorManager {
     private static Map<Block, GeneratorBlock> generators = new HashMap<>();
 
+    private static void updateGeneratorMap(GeneratorBlock generator, Block oldBlock) {
+        generators.remove(oldBlock);
+        generators.put(generator.getBlock(), generator);
+    }
+
     public static void loadAllGenerators() throws SQLException {
 
         List<GeneratorDB.Generator> savedGenerators = PixelGenerator.getInstance().getGeneratorDB().loadGenerators();
@@ -61,6 +66,7 @@ public class GeneratorManager {
         }
     }
 
+
     public static void removeGenerator(Block block) {
         GeneratorBlock generator = findByBlock(block);
         if (generator != null) {
@@ -70,6 +76,18 @@ public class GeneratorManager {
                 return;
             }
         }
+    }
+
+    public static void updateGeneratorPosition(GeneratorBlock generator, Block block) {
+        try {
+            PixelGenerator.getInstance().getGeneratorDB().updateGeneratorPosition(generator, block.getX(), block.getY(), block.getZ());
+        } catch (Exception e) {
+            return;
+        }
+        Block oldBlock = generator.getBlock();
+        generator.setBlock(block);
+        updateGeneratorMap(generator, oldBlock);
+
     }
 
     public static GeneratorBlock findByBlock(Block block) {
