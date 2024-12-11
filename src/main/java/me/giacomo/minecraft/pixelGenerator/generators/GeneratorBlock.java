@@ -35,13 +35,11 @@ public class GeneratorBlock {
     }
 
     public void generateItem() {
-        Bukkit.getConsoleSender().sendMessage("Generating item at " + block.getLocation() + " with quantity " + quantity);
-
         this.block.getWorld().dropItemNaturally(block.getLocation().add(0,1,0), new ItemStack(itemToGenerate, quantity));
     }
 
     public void onPlayerInteract(Player player, Block block) {
-
+        return;
     }
 
     public int getInterval() {
@@ -76,5 +74,15 @@ public class GeneratorBlock {
 
     public void setInterval(int interval) {
         this.interval = interval;
+    }
+
+    @Override
+    public String toString() {
+        return "GeneratorBlock{" +
+                "interval=" + interval +
+                ", quantity=" + quantity +
+                ", itemToGenerate=" + itemToGenerate +
+                ", block=" + block +
+                '}';
     }
 }

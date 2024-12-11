@@ -1,0 +1,28 @@
+package me.giacomo.minecraft.pixelGenerator.helpers;
+
+import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
+
+public enum Message {
+    ITEM_GENERATOR_NAME("ITEM_GENERATOR_NAME"),
+    PLAYER_PLACE_GENERATOR("PLAYER_PLACE_GENERATOR"),
+    PLAYER_DESTROY_GENERATOR("PLAYER_DESTROY_GENERATOR"),
+    PLAYER_RECEIVE_GENERATOR("PLAYER_RECEIVE_GENERATOR"),
+    INVALID_BLOCK_EXCEPTION("INVALID_BLOCK_EXCEPTION"),
+    INVALID_ITEM_EXCEPTION("INVALID_ITEM_EXCEPTION"),
+    IS_NOT_A_BLOCK_EXCEPTION("IS_NOT_A_BLOCK_EXCEPTION"),
+    PARAMETER_INTEGER_EXCEPTION("PARAMETER_INTEGER_EXCEPTION"),
+    PARAMETER_POSITIVE_INTEGER_EXCEPTION("PARAMETER_POSITIVE_INTEGER_EXCEPTION"),
+    DEFAULT_ERROR("DEFAULT_ERROR"),
+    NO_PERMISSION("NO_PERMISSION"),
+    UNKNOWN_SUBCOMMAND("UNKNOWN_SUBCOMMAND");
+
+    private final String value;
+
+    Message(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return PixelGenerator.getPhrase(value);
+    }
+}

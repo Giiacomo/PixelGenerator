@@ -1,9 +1,9 @@
 package me.giacomo.minecraft.pixelGenerator;
 
-import me.giacomo.minecraft.pixelGenerator.commands.MainPluginCommand;
 import me.giacomo.minecraft.pixelGenerator.db.GeneratorDB;
 import me.giacomo.minecraft.pixelGenerator.events.chat.TabComplete;
-import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorPlaceListener;
+import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorBlockListener;
+import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorDamageListener;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import org.bukkit.Bukkit;
@@ -35,20 +35,17 @@ public final class PixelGenerator extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        getLogger().info("Plugin enabled! Version: " + getDescription().getVersion());
+        loadConfiguration();
 
         try {
             generatorDB = new GeneratorDB(getDataFolder().getAbsolutePath() + "/data.db");
+            GeneratorManager.loadAllGenerators();
         } catch (Exception e) {
             getLogger().severe("[PixelGenerator] Could not load db!");
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        // load config.yml (generate one if not there)
-        loadConfiguration();
-
-        // load language.yml (generate one if not there)
-        //loadLangFile();
+        loadLangFile();
 
 
         registerCommands();
@@ -67,14 +64,13 @@ public final class PixelGenerator extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getCommand("template").setExecutor(new MainPluginCommand());
         getCommand("generator").setExecutor(new me.giacomo.minecraft.pixelGenerator.commands.GeneratorCommand(manager));
-        // set up tab completion
-        getCommand("template").setTabCompleter(new TabComplete());
+        getCommand("generator").setTabCompleter(new TabComplete());
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new GeneratorPlaceListener(), this);
+        getServer().getPluginManager().registerEvents(new GeneratorDamageListener(), this);
+        getServer().getPluginManager().registerEvents(new GeneratorBlockListener(), this);
     }
 
     public GeneratorDB getGeneratorDB() {
@@ -83,35 +79,27 @@ public final class PixelGenerator extends JavaPlugin {
 
     // load the config file and apply settings
     public void loadConfiguration() {
-        // Prepare config.yml (generate one if not there)
-        saveDefaultConfig();  // This saves the config.yml from the JAR to the data folder
+        saveDefaultConfig();
 
         FileConfiguration config = this.getConfig();
-
-        // General settings
         prefix = ChatColor.translateAlternateColorCodes('&', config.getString("plugin-prefix"));
         customSetting = config.getBoolean("custom-setting");
 
-        // Put more settings here as needed
-
-        Bukkit.getLogger().info(consolePrefix + "Settings Reloaded from config");
+        getLogger().info(consolePrefix + "Settings Reloaded from config");
     }
 
 
     // load the language file and apply settings
     public void loadLangFile() {
-
-        // load language.yml (generate one if not there)
-        // console and IO, instance
-        File langFile = new File(getDataFolder(), "language.yml");
+        File langFile = new File(getDataFolder(), "lang.yml");
         FileConfiguration langFileConfig = new YamlConfiguration();
-        if (!langFile.exists()){ Utilities.loadResource(this, "language.yml"); }
+        if (!langFile.exists()){ Utilities.loadResource(this, "lang.yml"); }
 
         try { langFileConfig.load(langFile); }
         catch (Exception e3) { e3.printStackTrace(); }
 
-        for(String priceString : langFileConfig.getKeys(false)) {
-            phrases.put(priceString, langFileConfig.getString(priceString));
+        for(String s : langFileConfig.getKeys(false)) {
+            phrases.put(s, langFileConfig.getString(s));
         }
     }
 

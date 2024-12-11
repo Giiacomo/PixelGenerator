@@ -1,0 +1,12 @@
+ITEM_GENERATOR_NAME: §bItem §fGenerator
+PLAYER_PLACE_GENERATOR: You placed a §bGenerator
+PLAYER_DESTROY_GENERATOR: You destroyed a §cGenerator
+PLAYER_RECEIVE_GENERATOR: You received a §bGenerator
+INVALID_BLOCK_EXCEPTION: Specified block is not valid
+INVALID_ITEM_EXCEPTION: Specified item is not valid
+IS_NOT_A_BLOCK_EXCEPTION: Specified block is not a placeable block
+PARAMETER_INTEGER_EXCEPTION: Interval and quantity need to be integer
+PARAMETER_POSITIVE_INTEGER_EXCEPTION: Interval and quantity need to be positive integer
+DEFAULT_ERROR: Unknown error!
+NO_PERMISSION: You do not have the right permission to use this command!
+UNKNOWN_SUBCOMMAND: Unknown subcommand

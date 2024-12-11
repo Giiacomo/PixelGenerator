@@ -1,32 +1,51 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
+import me.giacomo.minecraft.pixelGenerator.db.GeneratorDB;
 import me.giacomo.minecraft.pixelGenerator.helpers.TaskScheduler;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class GeneratorManager {
     private static Map<Block, GeneratorBlock> generators = new HashMap<>();
 
-    public static void addGenerator(GeneratorBlock generator, Player player) {
+    public static void loadAllGenerators() throws SQLException {
+
+        List<GeneratorDB.Generator> savedGenerators = PixelGenerator.getInstance().getGeneratorDB().loadGenerators();
+        savedGenerators.forEach(generator -> {
+            World world = Bukkit.getWorld(generator.getWorld());
+            Block block = world.getBlockAt(generator.getX(), generator.getY(), generator.getZ());
+            Material material = Material.getMaterial(generator.getMaterial());
+            int interval = generator.getInterval();
+            int quantity = generator.getQuantity();
+
+            GeneratorBlock generatorBlock = new GeneratorBlock(block, material, interval, quantity);
+            addGenerator(generatorBlock);
+
+        });
+
+    }
+
+
+    public static void addGenerator(GeneratorBlock generator) {
         if (!generators.containsKey(generator.getBlock())) {
 
-            generators.put(generator.getBlock(), generator);
             TaskScheduler scheduler = getScheduleGenerationTask(generator);
             try {
                 PixelGenerator.getInstance().getGeneratorDB().saveGenerator(generator);
+                generators.put(generator.getBlock(), generator);
             } catch (Exception e) {
-                player.sendMessage("Couldn't save generator: " + e.getMessage());
                 return;
-            }
-            try {
-                PixelGenerator.getInstance().getGeneratorDB().loadGenerators().forEach(x-> player.sendMessage(x.toString()));
-            } catch (Exception e) {
-                player.sendMessage("Couldn't load generator: " + e.getMessage());
             }
 
             generator.setTask(scheduler.schedule());
@@ -34,17 +53,22 @@ public class GeneratorManager {
     }
 
 
-    public static void removeGenerator(GeneratorBlock generator) {
+    public static void removeGenerator(GeneratorBlock generator) throws SQLException {
         if (generators.containsKey(generator.getBlock())) {
             generator.cancelTask();
             generators.remove(generator.getBlock());
+            PixelGenerator.getInstance().getGeneratorDB().removeGenerator(generator);
         }
     }
 
-    public static void removeGeneratorByBlock(Block block) {
+    public static void removeGenerator(Block block) {
         GeneratorBlock generator = findByBlock(block);
         if (generator != null) {
-            removeGenerator(generator);
+            try {
+                removeGenerator(generator);
+            } catch (Exception e) {
+                return;
+            }
         }
     }
 
