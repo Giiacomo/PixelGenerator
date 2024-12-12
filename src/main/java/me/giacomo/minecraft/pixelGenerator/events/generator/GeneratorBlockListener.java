@@ -46,14 +46,15 @@ public class GeneratorBlockListener implements Listener {
     @EventHandler
     public void onGeneratorDestroy(BlockBreakEvent event) throws MaterialNotBlockException {
         Player player = event.getPlayer();
-
-        if (!GeneratorInteractions.CAN_BREAK.getConfigValue() || !Permissions.BREAK.has(player)) {
+        Block block = event.getBlock();
+        if (    GeneratorManager.isGenerator(block)
+                && (!GeneratorInteractions.CAN_BREAK.getConfigValue()
+                || !Permissions.BREAK.has(player))) {
             event.setCancelled(true);
             return;
         }
-        Block block = event.getBlock();
+
         GeneratorHandler.handleDestroyGenerator(block, player);
         event.setDropItems(false);
-
     }
 }

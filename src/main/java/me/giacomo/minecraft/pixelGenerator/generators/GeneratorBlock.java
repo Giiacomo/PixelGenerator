@@ -1,6 +1,7 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
+import me.giacomo.minecraft.pixelGenerator.helpers.GeneratorTaskScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,7 +25,16 @@ public class GeneratorBlock {
         this.quantity = quantity;
         this.interval = interval;
     }
+
+    public GeneratorTaskScheduler getScheduleGenerationTask() {
+        Runnable task = this::generateItem;
+        long interval = 20L * this.getInterval();
+        long delay = interval;
+        return new GeneratorTaskScheduler(task, delay, interval);
+    }
+
     public void setTask(BukkitTask task) {
+        cancelTask();
         this.task = task;
     }
 
@@ -35,7 +45,7 @@ public class GeneratorBlock {
     }
 
     public void generateItem() {
-        this.block.getWorld().dropItemNaturally(block.getLocation().add(0,1,0), new ItemStack(itemToGenerate, quantity));
+        this.block.getWorld().dropItem(block.getLocation().add(0.5,1,0.5), new ItemStack(itemToGenerate, quantity));
     }
 
     public void onPlayerInteract(Player player, Block block) {
@@ -70,8 +80,13 @@ public class GeneratorBlock {
         this.quantity = quantity;
     }
 
-    public void setInterval(int interval) {
+    public boolean setInterval(int interval) {
+        if (interval <= 0) {
+            interval = 1;
+            return false;
+        }
         this.interval = interval;
+        return true;
     }
 
     @Override

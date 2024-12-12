@@ -4,19 +4,19 @@ import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-public class TaskScheduler {
+public class GeneratorTaskScheduler {
     private final Runnable task;
     private final long delay;
     private final long interval;
 
-    public TaskScheduler(Runnable task, long delay, long interval) {
+    public GeneratorTaskScheduler(Runnable task, long delay, long interval) {
         this.task = task;
         this.delay = delay;
         this.interval = interval;
     }
 
     public BukkitTask schedule() {
-        Bukkit.getLogger().info("Scheduling task with delay " + delay + " and interval " + interval);
+        //Bukkit.getLogger().info("Scheduling task with delay " + delay + " and interval " + interval);
 
         return Bukkit.getScheduler().runTaskTimer(
                 PixelGenerator.getInstance(),

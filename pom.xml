@@ -60,6 +60,10 @@
 
     <repositories>
         <repository>
+            <id>xenondevs</id>
+            <url>https://repo.xenondevs.xyz/releases</url>
+        </repository>
+        <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
@@ -75,6 +79,13 @@
     </repositories>
 
     <dependencies>
+
+        <dependency>
+            <groupId>xyz.xenondevs.invui</groupId>
+            <artifactId>invui</artifactId>
+            <version>1.43</version>
+            <type>pom</type>
+        </dependency>
 
         <dependency>
             <groupId>com.github.cryptomorin</groupId>

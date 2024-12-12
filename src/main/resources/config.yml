@@ -1,7 +1,5 @@
-# Configurazione del plugin PixelGenerator
 plugin-prefix: "&7[&aPixel&fGenerator&7] &8"
 
-# Messaggi configurabili
 generators-interactions:
     can-break: false
     can-explode: false
@@ -9,3 +7,11 @@ generators-interactions:
     can-burn: false
     can-lava-destroy: false
     can-entities-move: false
+
+gui:
+    window:
+        name: Generator GUI
+    items:
+        interval-item:
+            item: CLOCK
+            name: Interval

@@ -4,6 +4,7 @@ import me.giacomo.minecraft.pixelGenerator.db.GeneratorDB;
 import me.giacomo.minecraft.pixelGenerator.events.chat.TabComplete;
 import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorBlockListener;
 import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorDamageListener;
+import me.giacomo.minecraft.pixelGenerator.events.generator.PlayerInteractionListener;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import org.bukkit.Bukkit;
@@ -68,6 +69,7 @@ public final class PixelGenerator extends JavaPlugin {
     }
 
     private void registerEvents() {
+        getServer().getPluginManager().registerEvents(new PlayerInteractionListener(), this);
         getServer().getPluginManager().registerEvents(new GeneratorDamageListener(), this);
         getServer().getPluginManager().registerEvents(new GeneratorBlockListener(), this);
     }

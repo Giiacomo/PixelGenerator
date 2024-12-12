@@ -10,3 +10,4 @@ PARAMETER_POSITIVE_INTEGER_EXCEPTION: Interval and quantity need to be positive 
 DEFAULT_ERROR: Unknown error!
 NO_PERMISSION: You do not have the right permission to use this command!
 UNKNOWN_SUBCOMMAND: Unknown subcommand
+

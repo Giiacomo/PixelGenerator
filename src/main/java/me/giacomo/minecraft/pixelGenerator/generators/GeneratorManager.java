@@ -2,19 +2,16 @@ package me.giacomo.minecraft.pixelGenerator.generators;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.db.GeneratorDB;
-import me.giacomo.minecraft.pixelGenerator.helpers.TaskScheduler;
-import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
+import me.giacomo.minecraft.pixelGenerator.helpers.GeneratorTaskScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class GeneratorManager {
     private static Map<Block, GeneratorBlock> generators = new HashMap<>();
@@ -45,7 +42,6 @@ public class GeneratorManager {
     public static void addGenerator(GeneratorBlock generator) {
         if (!generators.containsKey(generator.getBlock())) {
 
-            TaskScheduler scheduler = getScheduleGenerationTask(generator);
             try {
                 PixelGenerator.getInstance().getGeneratorDB().saveGenerator(generator);
                 generators.put(generator.getBlock(), generator);
@@ -53,7 +49,7 @@ public class GeneratorManager {
                 return;
             }
 
-            generator.setTask(scheduler.schedule());
+            generator.setTask(generator.getScheduleGenerationTask().schedule());
         }
     }
 
@@ -92,14 +88,6 @@ public class GeneratorManager {
 
     public static GeneratorBlock findByBlock(Block block) {
         return generators.get(block);
-    }
-
-    public static TaskScheduler getScheduleGenerationTask(GeneratorBlock generator) {
-        Runnable task = generator::generateItem;
-        long delay = 0L;
-        long interval = 20L * generator.getInterval();
-
-        return new TaskScheduler(task, delay, interval);
     }
 
     public static boolean isGenerator(Block block) {
