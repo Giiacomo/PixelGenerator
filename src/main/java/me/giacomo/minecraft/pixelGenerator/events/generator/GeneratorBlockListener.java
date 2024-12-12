@@ -4,6 +4,8 @@ import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorItem;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
+import me.giacomo.minecraft.pixelGenerator.handlers.GeneratorHandler;
+import me.giacomo.minecraft.pixelGenerator.helpers.enums.GeneratorInteractions;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Permissions;
@@ -44,19 +46,14 @@ public class GeneratorBlockListener implements Listener {
     @EventHandler
     public void onGeneratorDestroy(BlockBreakEvent event) throws MaterialNotBlockException {
         Player player = event.getPlayer();
-        if (!Permissions.BREAK.has(player))
+
+        if (!GeneratorInteractions.CAN_BREAK.getConfigValue() || !Permissions.BREAK.has(player)) {
+            event.setCancelled(true);
             return;
-
-        Block block = event.getBlock();
-        if (GeneratorManager.isGenerator(block)) {
-            Utilities.informPlayer(player, Messages.PLAYER_DESTROY_GENERATOR.getValue());
-            if (!player.getGameMode().toString().equals(GameMode.CREATIVE.toString())) {
-                ItemStack is = GeneratorItem.createGeneratorItemFromGeneratorBlock(GeneratorManager.findByBlock(block));
-                event.getBlock().getWorld().dropItemNaturally(block.getLocation(), is);
-            }
-
-            GeneratorManager.removeGenerator(block);
-            event.setDropItems(false);
         }
+        Block block = event.getBlock();
+        GeneratorHandler.handleDestroyGenerator(block, player);
+        event.setDropItems(false);
+
     }
 }

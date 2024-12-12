@@ -3,6 +3,7 @@ package me.giacomo.minecraft.pixelGenerator.events.generator;
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
+import me.giacomo.minecraft.pixelGenerator.handlers.GeneratorHandler;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.GeneratorInteractions;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -13,18 +14,36 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
+import java.util.List;
+
+import static me.giacomo.minecraft.pixelGenerator.handlers.GeneratorHandler.handleDestroyGenerator;
+
 public class GeneratorDamageListener implements Listener {
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
-        if (!GeneratorInteractions.CAN_EXPLODE.getConfigValue())
+        if (!GeneratorInteractions.CAN_EXPLODE.getConfigValue()) {
             event.blockList().removeIf(GeneratorManager::isGenerator);
+            return;
+        }
+        event.blockList().forEach(block -> handleDestroyGenerator(block, null));
+
+        if (event.blockList().stream().anyMatch(GeneratorManager::isGenerator)) {
+            event.setYield(0f);
+        }
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        if (!GeneratorInteractions.CAN_EXPLODE.getConfigValue())
+        if (!GeneratorInteractions.CAN_EXPLODE.getConfigValue()) {
             event.blockList().removeIf(GeneratorManager::isGenerator);
+            return;
+        }
+        event.blockList().forEach(block -> handleDestroyGenerator(block, null));
+
+        if (event.blockList().stream().anyMatch(GeneratorManager::isGenerator)) {
+            event.setYield(0f);
+        }
     }
 
     @EventHandler
@@ -35,18 +54,7 @@ public class GeneratorDamageListener implements Listener {
             return;
         }
 
-        for (Block block : event.getBlocks()) {
-            if (GeneratorManager.isGenerator(block)) {
-                GeneratorBlock generatorBlock = GeneratorManager.findByBlock(block);
-
-                if (generatorBlock != null) {
-                    BlockFace pistonDirection = event.getDirection();
-                    Block newBlock = block.getRelative(pistonDirection);
-                    GeneratorManager.updateGeneratorPosition(generatorBlock, newBlock);
-
-                }
-            }
-        }
+        GeneratorHandler.handlePistonInteractions(event.getBlocks(), event.getDirection());
     }
 
     @EventHandler
@@ -55,7 +63,10 @@ public class GeneratorDamageListener implements Listener {
             event.getBlocks().stream().anyMatch(GeneratorManager::isGenerator)) {
             event.setCancelled(true);
         }
+
+        GeneratorHandler.handlePistonInteractions(event.getBlocks(), event.getDirection());
     }
+
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
