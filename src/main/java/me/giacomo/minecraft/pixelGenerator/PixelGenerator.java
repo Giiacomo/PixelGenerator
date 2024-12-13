@@ -36,14 +36,24 @@ public final class PixelGenerator extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        if (!Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
+            getLogger().severe("*** HolographicDisplays is not installed or not enabled. ***");
+            getLogger().severe("*** This plugin will be disabled. ***");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         loadConfiguration();
 
         try {
             generatorDB = new GeneratorDB(getDataFolder().getAbsolutePath() + "/data.db");
             GeneratorManager.loadAllGenerators();
         } catch (Exception e) {
+            e.printStackTrace();
             getLogger().severe("[PixelGenerator] Could not load db!");
             Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
 
         loadLangFile();

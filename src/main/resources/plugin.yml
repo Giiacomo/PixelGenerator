@@ -2,6 +2,8 @@ name: PixelGenerator
 version: '1.0-SNAPSHOT'
 main: me.giacomo.minecraft.pixelGenerator.PixelGenerator
 api-version: '1.21'
+depend:
+  - DecentHolograms
 commands:
   generator:
       description: Create and manage item generators

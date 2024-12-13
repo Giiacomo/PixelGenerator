@@ -82,6 +82,7 @@ public class GeneratorManager {
         }
         Block oldBlock = generator.getBlock();
         generator.setBlock(block);
+        generator.updateHologram();
         updateGeneratorMap(generator, oldBlock);
 
     }

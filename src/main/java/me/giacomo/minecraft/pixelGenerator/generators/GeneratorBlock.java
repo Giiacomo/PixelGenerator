@@ -1,5 +1,8 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
+
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.helpers.GeneratorTaskScheduler;
 import org.bukkit.Bukkit;
@@ -11,6 +14,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Vector;
+
 public class GeneratorBlock {
 
     private Block block;
@@ -18,12 +23,25 @@ public class GeneratorBlock {
     private int quantity;
     private int interval;
     private BukkitTask task;
+    private Hologram hologram;
 
     public GeneratorBlock(Block blockType, Material itemToGenerate, int interval, int quantity) {
         this.block = blockType;
         this.itemToGenerate = itemToGenerate;
         this.quantity = quantity;
         this.interval = interval;
+        this.hologram = DHAPI.createHologram(getHoloName(), this.getBlock().getLocation().add(0.5,1.5,0.5));
+        this.updateHologram();
+    }
+
+    public String getHoloName () {
+        return getBlock().getX() + "_x_" + getBlock().getY() + "_y_" + getBlock().getZ() + "_z";
+    }
+
+    public void updateHologram() {
+        //DHAPI.moveHologram(hologram.getName(), hologram.getLocation());
+        DHAPI.removeHologramLine(hologram, 0);
+        DHAPI.addHologramLine(hologram, toString());
     }
 
     public GeneratorTaskScheduler getScheduleGenerationTask() {
@@ -76,8 +94,13 @@ public class GeneratorBlock {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public boolean setQuantity(int quantity) {
+        if (quantity <= 0) {
+            this.quantity = 1;
+            return false;
+        }
         this.quantity = quantity;
+        return true;
     }
 
     public boolean setInterval(int interval) {
@@ -91,11 +114,6 @@ public class GeneratorBlock {
 
     @Override
     public String toString() {
-        return "GeneratorBlock{" +
-                "interval=" + interval +
-                ", quantity=" + quantity +
-                ", itemToGenerate=" + itemToGenerate +
-                ", block=" + block +
-                '}';
+        return "&b" + this.getItemToGenerate().toString() + " &f*&b " + this.getQuantity() + " &f*&b " + this.getInterval() + "&fs";
     }
 }

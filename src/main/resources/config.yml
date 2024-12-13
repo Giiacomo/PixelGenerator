@@ -15,3 +15,6 @@ gui:
         interval-item:
             item: CLOCK
             name: Interval
+        quantity-item:
+            item: GLOWSTONE_DUST
+            name: Quantity

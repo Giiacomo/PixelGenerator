@@ -12,14 +12,11 @@ import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.AbstractItem;
 
-public class IntervalGUIItem extends AbstractItem {
+public class IntervalGUIItem extends AbstractGUIItem {
 
-    private final GeneratorBlock generator;
-    private int interval;
 
     public IntervalGUIItem(GeneratorBlock generator) {
-        this.generator = generator;
-        interval = generator.getInterval();
+        super(generator);
     }
 
     @Override
@@ -34,29 +31,18 @@ public class IntervalGUIItem extends AbstractItem {
     }
 
     @Override
-    public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent inventoryClickEvent) {
-        if (clickType.isLeftClick()) {
-            if (clickType.isShiftClick()) {
-                if (generator.setInterval(generator.getInterval() - 5))
-                    Utilities.informPlayer(player, "Updated interval: " + generator.getInterval());
-                else Utilities.warnPlayer(player, "Interval can only be a positive number!");
-            } else {
-                if (generator.setInterval(generator.getInterval() - 1))
-                    Utilities.informPlayer(player, "Updated interval: " + generator.getInterval());
-                else Utilities.warnPlayer(player, "Interval can only be a positive number!");            }
+    protected void updateValue(int delta, Player player) {
+        if (delta < 0 && generator.setInterval(generator.getInterval() + delta)) {
+            Utilities.informPlayer(player, "Updated interval: " + generator.getInterval());
+        } else if (delta > 0 && generator.setInterval(generator.getInterval() + delta)) {
+            Utilities.informPlayer(player, "Updated interval: " + generator.getInterval());
         } else {
-            if (clickType.isShiftClick()) {
-                generator.setInterval(generator.getInterval() + 5);
-                Utilities.informPlayer(player, "Updated interval: " + generator.getInterval());
-            } else {
-                generator.setInterval(generator.getInterval() + 1);
-                Utilities.informPlayer(player, "Updated interval: " + generator.getInterval());
-            }
+            Utilities.warnPlayer(player, "Interval can only be a positive number!");
         }
-        generator.setTask(generator.getScheduleGenerationTask().schedule());
-
-        notifyWindows();
     }
 
-
+    @Override
+    protected String getValue() {
+        return String.valueOf(generator.getInterval());
+    }
 }
