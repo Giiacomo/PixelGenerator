@@ -20,6 +20,7 @@ import java.util.Map;
 public final class PixelGenerator extends JavaPlugin {
 
 
+
     private GeneratorDB generatorDB;
     private static PixelGenerator instance;
     private static GeneratorManager manager;
@@ -29,7 +30,7 @@ public final class PixelGenerator extends JavaPlugin {
     // core settings
     public static String prefix = "&c&l[&5&lPixelGenerator&c&l] &8&l"; // generally unchanged unless otherwise stated in config
     public static String consolePrefix = "[PixelGenerator] ";
-
+    public static String hologramPrefix = "pixelgenoholos_";
     // customizable settings
     public static boolean customSetting = false;
 

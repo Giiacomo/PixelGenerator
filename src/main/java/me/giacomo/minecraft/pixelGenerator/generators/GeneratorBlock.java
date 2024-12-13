@@ -39,7 +39,7 @@ public class GeneratorBlock {
     }
 
     public String getHoloName () {
-        return getBlock().getX() + "_x_" + getBlock().getY() + "_y_" + getBlock().getZ() + "_z";
+        return PixelGenerator.hologramPrefix + getBlock().getX() + "_x_" + getBlock().getY() + "_y_" + getBlock().getZ() + "_z";
     }
 
     public void updateHologramPosition () {
@@ -75,12 +75,12 @@ public class GeneratorBlock {
             @Override
             public void run() {
                 if (timeRemaining > 0) {
-                    updateHologramText(String.valueOf(timeRemaining / 20));
                     timeRemaining -= 20;
                 } else {
                     generateItem();
                     timeRemaining = 20L * getInterval();
                 }
+                updateHologramText(String.valueOf(timeRemaining / 20));
             }
         };
         long interval = 20L * this.getInterval();

@@ -28,8 +28,13 @@ public class GeneratorManager {
             World world = Bukkit.getWorld(generator.getWorld());
             Block block = world.getBlockAt(generator.getX(), generator.getY(), generator.getZ());
             Material material = Material.getMaterial(generator.getMaterial());
+            Material blockMaterial = Material.getMaterial(generator.getBlockMaterial());
             int interval = generator.getInterval();
             int quantity = generator.getQuantity();
+
+            if (!block.getType().equals(blockMaterial)) {
+                block.setType(blockMaterial);
+            }
 
             GeneratorBlock generatorBlock = new GeneratorBlock(block, material, interval, quantity);
             addGenerator(generatorBlock);

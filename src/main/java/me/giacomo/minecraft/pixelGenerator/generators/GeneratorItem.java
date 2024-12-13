@@ -21,7 +21,7 @@ public class GeneratorItem {
         Material blockMaterial = Material.getMaterial(block);
         Material itemMaterial = Material.getMaterial(itemName);
 
-        if (blockMaterial == null) {
+        if (blockMaterial == null || blockMaterial == Material.AIR) {
             throw new IllegalArgumentException(Messages.INVALID_BLOCK_EXCEPTION.getValue() + ": " + block);
         }
 

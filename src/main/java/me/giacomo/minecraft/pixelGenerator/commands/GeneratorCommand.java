@@ -1,5 +1,6 @@
 package me.giacomo.minecraft.pixelGenerator.commands;
 
+import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorItem;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
@@ -106,8 +107,8 @@ public class GeneratorCommand implements CommandExecutor {
             return;
         }
 
-        //reloadConfig();
-        //player.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
+        PixelGenerator.reload();
+        Utilities.informPlayer(player,"Configuration reloaded.");
     }
 
     private void handleClearCommand(Player player, String[] args) {
