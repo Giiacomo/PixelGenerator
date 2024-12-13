@@ -33,7 +33,7 @@ public abstract class AbstractGUIItem extends AbstractItem {
                     updateValue(1, player);
                 }
             }
-            generator.updateHologram();
+            //generator.updateHologramText();
             generator.setTask(generator.getScheduleGenerationTask().schedule());
             notifyWindows();
         }

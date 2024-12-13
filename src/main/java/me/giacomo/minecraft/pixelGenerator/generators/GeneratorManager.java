@@ -58,6 +58,7 @@ public class GeneratorManager {
         if (generators.containsKey(generator.getBlock())) {
             generator.cancelTask();
             generators.remove(generator.getBlock());
+            generator.removeHologram();
             PixelGenerator.getInstance().getGeneratorDB().removeGenerator(generator);
         }
     }
@@ -82,7 +83,7 @@ public class GeneratorManager {
         }
         Block oldBlock = generator.getBlock();
         generator.setBlock(block);
-        generator.updateHologram();
+        generator.updateHologramPosition();
         updateGeneratorMap(generator, oldBlock);
 
     }

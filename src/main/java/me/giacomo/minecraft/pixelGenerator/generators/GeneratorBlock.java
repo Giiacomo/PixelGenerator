@@ -18,6 +18,10 @@ import java.util.Vector;
 
 public class GeneratorBlock {
 
+    private static final float holoXOffset = 0.5f;
+    private static final float holoYOffset = 1.5f;
+    private static final float holoZOffset = 0.5f;
+
     private Block block;
     private Material itemToGenerate;
     private int quantity;
@@ -30,25 +34,58 @@ public class GeneratorBlock {
         this.itemToGenerate = itemToGenerate;
         this.quantity = quantity;
         this.interval = interval;
-        this.hologram = DHAPI.createHologram(getHoloName(), this.getBlock().getLocation().add(0.5,1.5,0.5));
-        this.updateHologram();
+        this.hologram = DHAPI.createHologram(getHoloName(), this.getBlock().getLocation().add(holoXOffset,holoYOffset, holoZOffset));
+        this.updateHologramText();
     }
 
     public String getHoloName () {
         return getBlock().getX() + "_x_" + getBlock().getY() + "_y_" + getBlock().getZ() + "_z";
     }
 
-    public void updateHologram() {
-        //DHAPI.moveHologram(hologram.getName(), hologram.getLocation());
+    public void updateHologramPosition () {
+        DHAPI.moveHologram(hologram.getName(), this.getBlock().getLocation().add(holoXOffset, holoYOffset, holoZOffset));
+    }
+
+    public void removeHologram () {
+        DHAPI.removeHologram(hologram.getName());
+    }
+
+    public void updateHologramText() {
         DHAPI.removeHologramLine(hologram, 0);
         DHAPI.addHologramLine(hologram, toString());
     }
 
+    public String getItemToGenerateFormatted() {
+        return itemToGenerate.name().toLowerCase().replace("_", " ");
+    }
+
+    public String getDynamicHologramText(String s) {
+        return "&f" + this.getQuantity() + " &f- &b" + this.getItemToGenerateFormatted() + " &f-&6 " + s + "&fs";
+    }
+
+    public void updateHologramText(String s) {
+        //DHAPI.removeHologramLine(hologram, 0);
+        DHAPI.setHologramLine(hologram, 0, getDynamicHologramText(s));
+    }
+
     public GeneratorTaskScheduler getScheduleGenerationTask() {
-        Runnable task = this::generateItem;
+        Runnable task = new Runnable() {
+            private long timeRemaining = 20L * getInterval();
+
+            @Override
+            public void run() {
+                if (timeRemaining > 0) {
+                    updateHologramText(String.valueOf(timeRemaining / 20));
+                    timeRemaining -= 20;
+                } else {
+                    generateItem();
+                    timeRemaining = 20L * getInterval();
+                }
+            }
+        };
         long interval = 20L * this.getInterval();
         long delay = interval;
-        return new GeneratorTaskScheduler(task, delay, interval);
+        return new GeneratorTaskScheduler(task, 0L, 20L);
     }
 
     public void setTask(BukkitTask task) {
