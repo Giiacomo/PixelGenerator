@@ -15,6 +15,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractGeneratorBlock<T> {
 
@@ -22,6 +24,9 @@ public abstract class AbstractGeneratorBlock<T> {
     protected static final float holoYOffset = 1.75f;
     protected static final float holoZOffset = 0.5f;
     protected static final float VISIBILITY_RADIUS = 6f;
+    protected static final int GENERATOR_ACTIVATION_RADIUS = PixelGenerator.getInstance().getConfig()
+                                                            .getInt("generators-info.generation-activation-range");
+
 
     protected Block block;
     protected T itemToGenerate;
@@ -60,13 +65,32 @@ public abstract class AbstractGeneratorBlock<T> {
         Utilities.playSound(sound, player);
     }
 
-    public void playSoundToNearbyPlayers() {
+    public List<Player> getNearbyPlayers() {
+
+        return Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.getLocation().distance(block.getLocation()) < VISIBILITY_RADIUS)
+                .map(player -> (Player) player) // Cast each player explicitly
+                .collect(Collectors.toList()); // Collect the filtered players into a list
+    }
+
+    public boolean isAnyoneInGenerationRange() {
+        int blockChunkX = block.getX();
+        int blockChunkZ = block.getZ();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
-            double distance = player.getLocation().distance(block.getLocation());
-            if (distance <= VISIBILITY_RADIUS) {
-                playSound(player);
-            }
+            int playerX = player.getLocation().getBlockX();
+            int playerZ = player.getLocation().getBlockZ();
+
+            int generatorDistanceX = Math.abs(blockChunkX - playerX);
+            int generatorDistanceZ = Math.abs(blockChunkZ - playerZ);
+            if (generatorDistanceX <= GENERATOR_ACTIVATION_RADIUS && generatorDistanceZ <= GENERATOR_ACTIVATION_RADIUS)
+                return true;
         }
+        return false;
+    }
+
+    public void playSoundToNearbyPlayers() {
+        getNearbyPlayers().forEach(this::playSound);
     }
 
     private void startVisibilityUpdater() {
@@ -75,14 +99,11 @@ public abstract class AbstractGeneratorBlock<T> {
             public void run() {
                 if (!block.getChunk().isLoaded()) return;
                 if (hologram == null) return;
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    double distance = player.getLocation().distance(block.getLocation());
-                    if (distance <= VISIBILITY_RADIUS) {
-                        hologram.setShowPlayer(player);
-                    } else {
-                        hologram.removeShowPlayer(player);
-                    }
-                }
+                getNearbyPlayers().forEach(player -> hologram.setShowPlayer(player));
+
+                Bukkit.getOnlinePlayers().stream()
+                        .filter(player -> !getNearbyPlayers().contains(player))
+                        .forEach(hologram::removeShowPlayer);
             }
         }.runTaskTimer(PixelGenerator.getInstance(), 0L, 20L);
     }
@@ -127,10 +148,27 @@ public abstract class AbstractGeneratorBlock<T> {
 
     public GeneratorTaskScheduler getScheduleGenerationTask() {
         Runnable task = new Runnable() {
+
+
             protected long timeRemaining = 20L * getInterval();
 
             @Override
             public void run() {
+                if (!block.getChunk().isLoaded()) {
+                    PixelGenerator.getInstance().getServer().getScheduler().runTaskLater(
+                            PixelGenerator.getInstance(),
+                            this,
+                            200L
+                    );
+                    Bukkit.getLogger().severe("Chunk not loaded for " + getBlock().getLocation());
+                    return;
+                }
+
+                if (!isAnyoneInGenerationRange()) {
+                    Bukkit.getLogger().severe("No players found for " + getBlock().getLocation());
+                    return;
+                }
+
                 if (timeRemaining > 0) {
                     timeRemaining -= 20;
                 } else {

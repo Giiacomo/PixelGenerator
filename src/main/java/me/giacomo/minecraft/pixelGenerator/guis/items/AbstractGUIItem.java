@@ -1,11 +1,15 @@
 package me.giacomo.minecraft.pixelGenerator.guis.items;
 
+import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.xenondevs.invui.item.impl.AbstractItem;
+
+import java.sql.SQLException;
 
 public abstract class AbstractGUIItem extends AbstractItem {
         protected final AbstractGeneratorBlock generator;
@@ -29,7 +33,12 @@ public abstract class AbstractGUIItem extends AbstractItem {
                     updateValue(1, player);
                 }
             }
-            //generator.updateHologramText();
+            try {
+                PixelGenerator.getInstance().getGeneratorDB().updateGeneratorParameters(generator, generator.getInterval(), generator.getQuantity());
+            } catch (SQLException e) {
+                Utilities.warnPlayer(player, "An error occurred while updating generator parameters");
+                return;
+            }
             generator.setTask(generator.getScheduleGenerationTask().schedule());
             notifyWindows();
         }

@@ -1,5 +1,8 @@
 plugin-prefix: "&7[&bPixel&fGenerator&7] &8"
 
+generators-info:
+    generation-activation-range: 40
+
 generators-interactions:
     can-break: false
     can-explode: false

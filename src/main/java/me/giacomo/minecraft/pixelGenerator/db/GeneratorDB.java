@@ -18,7 +18,7 @@ public class GeneratorDB {
                 "z INTEGER NOT NULL, " +
                 "world TEXT NOT NULL, " +
                 "material TEXT NOT NULL, " +
-                "blockMaterial TEXT NOT NULL, " + // Aggiungi il nuovo campo
+                "blockMaterial TEXT NOT NULL, " +
                 "quantity INTEGER NOT NULL, " +
                 "interval INTEGER NOT NULL, " +
                 "PRIMARY KEY (x, y, z, world)" +
@@ -46,7 +46,7 @@ public class GeneratorDB {
         int z = generatorBlock.getBlock().getZ();
         String world = generatorBlock.getBlock().getWorld().getName();
         String material = generatorBlock.getItemToGenerateName();
-        String blockMaterial = generatorBlock.getBlock().getType().name(); // Nuovo campo
+        String blockMaterial = generatorBlock.getBlock().getType().name();
         int quantity = generatorBlock.getQuantity();
         int interval = generatorBlock.getInterval();
 
@@ -65,6 +65,22 @@ public class GeneratorDB {
             stmt.setInt(5, generatorBlock.getBlock().getY());
             stmt.setInt(6, generatorBlock.getBlock().getZ());
             stmt.setString(7, generatorBlock.getBlock().getWorld().getName());
+
+            stmt.executeUpdate();
+        }
+    }
+
+    public void updateGeneratorParameters(AbstractGeneratorBlock generatorBlock, int interval, int quantity) throws SQLException {
+        String sql = "UPDATE generators SET interval = ?, quantity = ? WHERE x = ? AND y = ? AND z = ? AND world = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, interval);
+            stmt.setInt(2, quantity);
+
+            stmt.setInt(3, generatorBlock.getBlock().getX());
+            stmt.setInt(4, generatorBlock.getBlock().getY());
+            stmt.setInt(5, generatorBlock.getBlock().getZ());
+            stmt.setString(6, generatorBlock.getBlock().getWorld().getName());
 
             stmt.executeUpdate();
         }
@@ -92,7 +108,7 @@ public class GeneratorDB {
                 int z = rs.getInt("z");
                 String world = rs.getString("world");
                 String material = rs.getString("material");
-                String blockMaterial = rs.getString("blockMaterial"); // Nuovo campo
+                String blockMaterial = rs.getString("blockMaterial");
                 int quantity = rs.getInt("quantity");
                 int interval = rs.getInt("interval");
                 generators.add(new Generator(x, y, z, world, material, blockMaterial, quantity, interval));
@@ -105,7 +121,7 @@ public class GeneratorDB {
         private final int x, y, z;
         private final String world;
         private final String material;
-        private final String blockMaterial; // Nuovo campo
+        private final String blockMaterial;
         private final int quantity, interval;
 
         public Generator(int x, int y, int z, String world, String material, String blockMaterial, int quantity, int interval) {
@@ -114,7 +130,7 @@ public class GeneratorDB {
             this.z = z;
             this.world = world;
             this.material = material;
-            this.blockMaterial = blockMaterial; // Nuovo campo
+            this.blockMaterial = blockMaterial;
             this.quantity = quantity;
             this.interval = interval;
         }
@@ -136,7 +152,7 @@ public class GeneratorDB {
         }
 
         public String getBlockMaterial() {
-            return blockMaterial; // Nuovo campo
+            return blockMaterial;
         }
 
         public int getQuantity() {
