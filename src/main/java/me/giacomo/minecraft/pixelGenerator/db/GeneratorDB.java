@@ -19,23 +19,25 @@ public class GeneratorDB {
                 "world TEXT NOT NULL, " +
                 "material TEXT NOT NULL, " +
                 "blockMaterial TEXT NOT NULL, " +
+                "sound TEXT NOT NULL, " +
                 "quantity INTEGER NOT NULL, " +
                 "interval INTEGER NOT NULL, " +
                 "PRIMARY KEY (x, y, z, world)" +
                 ")");
     }
 
-    public void saveGenerator(int x, int y, int z, String world, String material, String blockMaterial, int quantity, int interval) throws SQLException {
-        String sql = "INSERT OR REPLACE INTO generators (x, y, z, world, material, blockMaterial, quantity, interval) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public void saveGenerator(int x, int y, int z, String world, String material, String blockMaterial, String sound, int quantity, int interval) throws SQLException {
+        String sql = "INSERT OR REPLACE INTO generators (x, y, z, world, material, blockMaterial, sound, quantity, interval) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, x);
             stmt.setInt(2, y);
             stmt.setInt(3, z);
             stmt.setString(4, world);
             stmt.setString(5, material);
-            stmt.setString(6, blockMaterial); // Impostiamo il nuovo materiale
-            stmt.setInt(7, quantity);
-            stmt.setInt(8, interval);
+            stmt.setString(6, blockMaterial);
+            stmt.setString(7, sound);
+            stmt.setInt(8, quantity);
+            stmt.setInt(9, interval);
             stmt.executeUpdate();
         }
     }
@@ -47,10 +49,11 @@ public class GeneratorDB {
         String world = generatorBlock.getBlock().getWorld().getName();
         String material = generatorBlock.getItemToGenerateName();
         String blockMaterial = generatorBlock.getBlock().getType().name();
+        String sound = generatorBlock.getSound().name();
         int quantity = generatorBlock.getQuantity();
         int interval = generatorBlock.getInterval();
 
-        saveGenerator(x, y, z, world, material, blockMaterial, quantity, interval);
+        saveGenerator(x, y, z, world, material, blockMaterial, sound, quantity, interval);
     }
 
     public void updateGeneratorPosition(AbstractGeneratorBlock generatorBlock, int newX, int newY, int newZ) throws SQLException {
@@ -70,21 +73,23 @@ public class GeneratorDB {
         }
     }
 
-    public void updateGeneratorParameters(AbstractGeneratorBlock generatorBlock, int interval, int quantity) throws SQLException {
-        String sql = "UPDATE generators SET interval = ?, quantity = ? WHERE x = ? AND y = ? AND z = ? AND world = ?";
+    public void updateGeneratorParameters(AbstractGeneratorBlock generatorBlock) throws SQLException {
+        String sql = "UPDATE generators SET interval = ?, quantity = ?, sound = ? WHERE x = ? AND y = ? AND z = ? AND world = ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, interval);
-            stmt.setInt(2, quantity);
+            stmt.setInt(1, generatorBlock.getInterval());
+            stmt.setInt(2, generatorBlock.getQuantity());
+            stmt.setString(3, generatorBlock.getSound().name());
 
-            stmt.setInt(3, generatorBlock.getBlock().getX());
-            stmt.setInt(4, generatorBlock.getBlock().getY());
-            stmt.setInt(5, generatorBlock.getBlock().getZ());
-            stmt.setString(6, generatorBlock.getBlock().getWorld().getName());
+            stmt.setInt(4, generatorBlock.getBlock().getX());
+            stmt.setInt(5, generatorBlock.getBlock().getY());
+            stmt.setInt(6, generatorBlock.getBlock().getZ());
+            stmt.setString(7, generatorBlock.getBlock().getWorld().getName());
 
             stmt.executeUpdate();
         }
     }
+
 
     public void removeGenerator(AbstractGeneratorBlock generatorBlock) throws SQLException {
         String sql = "DELETE FROM generators WHERE x = ? AND y = ? AND z = ? AND world = ?";
@@ -97,9 +102,8 @@ public class GeneratorDB {
         }
     }
 
-    // Metodo aggiornato per caricare anche blockMaterial
     public List<Generator> loadGenerators() throws SQLException {
-        String sql = "SELECT x, y, z, world, material, blockMaterial, quantity, interval FROM generators";
+        String sql = "SELECT x, y, z, world, material, blockMaterial, sound, quantity, interval FROM generators";
         try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             List<Generator> generators = new ArrayList<>();
             while (rs.next()) {
@@ -109,9 +113,10 @@ public class GeneratorDB {
                 String world = rs.getString("world");
                 String material = rs.getString("material");
                 String blockMaterial = rs.getString("blockMaterial");
+                String sound = rs.getString("sound");
                 int quantity = rs.getInt("quantity");
                 int interval = rs.getInt("interval");
-                generators.add(new Generator(x, y, z, world, material, blockMaterial, quantity, interval));
+                generators.add(new Generator(x, y, z, world, material, blockMaterial, sound, quantity, interval));
             }
             return generators;
         }
@@ -122,15 +127,17 @@ public class GeneratorDB {
         private final String world;
         private final String material;
         private final String blockMaterial;
+        private final String sound;
         private final int quantity, interval;
 
-        public Generator(int x, int y, int z, String world, String material, String blockMaterial, int quantity, int interval) {
+        public Generator(int x, int y, int z, String world, String material, String blockMaterial, String sound, int quantity, int interval) {
             this.x = x;
             this.y = y;
             this.z = z;
             this.world = world;
             this.material = material;
             this.blockMaterial = blockMaterial;
+            this.sound = sound;
             this.quantity = quantity;
             this.interval = interval;
         }
@@ -153,6 +160,10 @@ public class GeneratorDB {
 
         public String getBlockMaterial() {
             return blockMaterial;
+        }
+
+        public String getSound() {
+            return sound;
         }
 
         public int getQuantity() {

@@ -33,12 +33,6 @@ public abstract class AbstractGUIItem extends AbstractItem {
                     updateValue(1, player);
                 }
             }
-            try {
-                PixelGenerator.getInstance().getGeneratorDB().updateGeneratorParameters(generator, generator.getInterval(), generator.getQuantity());
-            } catch (SQLException e) {
-                Utilities.warnPlayer(player, "An error occurred while updating generator parameters");
-                return;
-            }
             generator.setTask(generator.getScheduleGenerationTask().schedule());
             notifyWindows();
         }

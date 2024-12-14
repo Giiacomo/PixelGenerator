@@ -6,6 +6,7 @@ import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGe
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.CustomItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.items.GenerableItemManager;
+import me.giacomo.minecraft.pixelGenerator.helpers.enums.ActionSounds;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -39,14 +40,15 @@ public class GeneratorManager {
                 block.setType(blockMaterial);
             }
             Material material = Material.getMaterial(generator.getMaterial());
+            AbstractGeneratorBlock generatorBlock;
             if (material != null) {
-                AbstractGeneratorBlock<Material> generatorBlock = new NormalItemGeneratorBlock(block, material, interval, quantity);
-                addGenerator(generatorBlock);
+                generatorBlock = new NormalItemGeneratorBlock(block, material, interval, quantity);
             } else {
                 ItemStack itemToGenerate = GenerableItemManager.getItem(generator.getMaterial());
-                AbstractGeneratorBlock<ItemStack> generatorBlock = new CustomItemGeneratorBlock(block, itemToGenerate, interval, quantity);
-                addGenerator(generatorBlock);
+                generatorBlock = new CustomItemGeneratorBlock(block, itemToGenerate, interval, quantity);
             }
+            generatorBlock.setSound(ActionSounds.valueOf(generator.getSound()));
+            addGenerator(generatorBlock);
 
         });
 
