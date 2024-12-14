@@ -1,8 +1,7 @@
 package me.giacomo.minecraft.pixelGenerator.db;
 
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 
-import javax.swing.plaf.PanelUI;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +40,12 @@ public class GeneratorDB {
         }
     }
 
-    public void saveGenerator(GeneratorBlock generatorBlock) throws SQLException {
+    public void saveGenerator(AbstractGeneratorBlock generatorBlock) throws SQLException {
         int x = generatorBlock.getBlock().getX();
         int y = generatorBlock.getBlock().getY();
         int z = generatorBlock.getBlock().getZ();
         String world = generatorBlock.getBlock().getWorld().getName();
-        String material = generatorBlock.getItemToGenerate().name();
+        String material = generatorBlock.getItemToGenerateName();
         String blockMaterial = generatorBlock.getBlock().getType().name(); // Nuovo campo
         int quantity = generatorBlock.getQuantity();
         int interval = generatorBlock.getInterval();
@@ -54,7 +53,7 @@ public class GeneratorDB {
         saveGenerator(x, y, z, world, material, blockMaterial, quantity, interval);
     }
 
-    public void updateGeneratorPosition(GeneratorBlock generatorBlock, int newX, int newY, int newZ) throws SQLException {
+    public void updateGeneratorPosition(AbstractGeneratorBlock generatorBlock, int newX, int newY, int newZ) throws SQLException {
         String sql = "UPDATE generators SET x = ?, y = ?, z = ? WHERE x = ? AND y = ? AND z = ? AND world = ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -71,7 +70,7 @@ public class GeneratorDB {
         }
     }
 
-    public void removeGenerator(GeneratorBlock generatorBlock) throws SQLException {
+    public void removeGenerator(AbstractGeneratorBlock generatorBlock) throws SQLException {
         String sql = "DELETE FROM generators WHERE x = ? AND y = ? AND z = ? AND world = ?";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, generatorBlock.getBlock().getX());

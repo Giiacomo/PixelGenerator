@@ -1,7 +1,7 @@
 package me.giacomo.minecraft.pixelGenerator.guis.windows;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.guis.items.IntervalGUIItem;
 import me.giacomo.minecraft.pixelGenerator.guis.items.QuantityGUIItem;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ import xyz.xenondevs.invui.window.Window;
 
 public class DefaultGUIWindow {
 
-    public DefaultGUIWindow(Player player, GeneratorBlock generator) {
+    public DefaultGUIWindow(Player player, AbstractGeneratorBlock generator) {
         String title = PixelGenerator.getInstance().getConfig().getString("gui.window.name");
         if (title == null)
             title = "Generator GUI";

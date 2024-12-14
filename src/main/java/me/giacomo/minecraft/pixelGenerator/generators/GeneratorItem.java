@@ -1,6 +1,9 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
 import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.CustomItemGeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -26,6 +29,7 @@ public class GeneratorItem {
         }
 
         if (itemMaterial == null) {
+
             throw new IllegalArgumentException(Messages.INVALID_ITEM_EXCEPTION.getValue() + ": " + itemName);
         }
 
@@ -51,10 +55,23 @@ public class GeneratorItem {
         return item;
     }
 
-    public static ItemStack createGeneratorItemFromGeneratorBlock(GeneratorBlock generatorBlock) throws MaterialNotBlockException {
-        return createGeneratorItem(generatorBlock.getBlock().getType().name(),
-                                generatorBlock.getItemToGenerate().name(),
-                                generatorBlock.getInterval(),
-                                generatorBlock.getQuantity());
+    public static <T> ItemStack createGeneratorItemFromGeneratorBlock(AbstractGeneratorBlock<T> generatorBlock) throws MaterialNotBlockException {
+        if (generatorBlock instanceof NormalItemGeneratorBlock normalGenerator) {
+            return createGeneratorItem(
+                    normalGenerator.getBlock().getType().name(),
+                    normalGenerator.getItemToGenerateName(),
+                    normalGenerator.getInterval(),
+                    normalGenerator.getQuantity()
+            );
+        } else if (generatorBlock instanceof CustomItemGeneratorBlock customGenerator) {
+            // Casting esplicito e sicuro
+            return createGeneratorItem(
+                    customGenerator.getBlock().getType().name(),
+                    customGenerator.getItemToGenerateName(),
+                    customGenerator.getInterval(),
+                    customGenerator.getQuantity()
+            );
+        }
+        return null;
     }
 }

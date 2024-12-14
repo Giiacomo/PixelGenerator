@@ -2,7 +2,8 @@ package me.giacomo.minecraft.pixelGenerator.generators;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.db.GeneratorDB;
-import me.giacomo.minecraft.pixelGenerator.helpers.GeneratorTaskScheduler;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItemGeneratorBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GeneratorManager {
-    private static Map<Block, GeneratorBlock> generators = new HashMap<>();
+    private static Map<Block, AbstractGeneratorBlock> generators = new HashMap<>();
 
-    private static void updateGeneratorMap(GeneratorBlock generator, Block oldBlock) {
+    private static void updateGeneratorMap(AbstractGeneratorBlock generator, Block oldBlock) {
         generators.remove(oldBlock);
         generators.put(generator.getBlock(), generator);
     }
@@ -36,7 +37,7 @@ public class GeneratorManager {
                 block.setType(blockMaterial);
             }
 
-            GeneratorBlock generatorBlock = new GeneratorBlock(block, material, interval, quantity);
+            AbstractGeneratorBlock<Material> generatorBlock = new NormalItemGeneratorBlock(block, material, interval, quantity);
             addGenerator(generatorBlock);
 
         });
@@ -44,7 +45,7 @@ public class GeneratorManager {
     }
 
 
-    public static void addGenerator(GeneratorBlock generator) {
+    public static void addGenerator(AbstractGeneratorBlock generator) {
         if (!generators.containsKey(generator.getBlock())) {
 
             try {
@@ -59,7 +60,7 @@ public class GeneratorManager {
     }
 
 
-    public static void removeGenerator(GeneratorBlock generator) throws SQLException {
+    public static void removeGenerator(AbstractGeneratorBlock generator) throws SQLException {
         if (generators.containsKey(generator.getBlock())) {
             generator.cancelTask();
             generators.remove(generator.getBlock());
@@ -70,7 +71,7 @@ public class GeneratorManager {
 
 
     public static void removeGenerator(Block block) {
-        GeneratorBlock generator = findByBlock(block);
+        AbstractGeneratorBlock generator = findByBlock(block);
         if (generator != null) {
             try {
                 removeGenerator(generator);
@@ -80,7 +81,7 @@ public class GeneratorManager {
         }
     }
 
-    public static void updateGeneratorPosition(GeneratorBlock generator, Block block) {
+    public static void updateGeneratorPosition(AbstractGeneratorBlock generator, Block block) {
         try {
             PixelGenerator.getInstance().getGeneratorDB().updateGeneratorPosition(generator, block.getX(), block.getY(), block.getZ());
         } catch (Exception e) {
@@ -93,7 +94,7 @@ public class GeneratorManager {
 
     }
 
-    public static GeneratorBlock findByBlock(Block block) {
+    public static AbstractGeneratorBlock findByBlock(Block block) {
         return generators.get(block);
     }
 

@@ -1,15 +1,15 @@
 package me.giacomo.minecraft.pixelGenerator.events.generator;
 
 import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorItem;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.handlers.GeneratorHandler;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.GeneratorInteractions;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Permissions;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class GeneratorBlockListener implements Listener {
                 Integer interval = meta.getPersistentDataContainer().get(GeneratorItem.intervalKey, PersistentDataType.INTEGER);
                 Integer quantity = meta.getPersistentDataContainer().get(GeneratorItem.quantityKey, PersistentDataType.INTEGER);
                 Utilities.informPlayer(event.getPlayer(), Messages.PLAYER_PLACE_GENERATOR.getValue());
-                GeneratorBlock generator = new GeneratorBlock(event.getBlockPlaced(), generatedItem, interval, quantity);
+                AbstractGeneratorBlock<Material> generator = new NormalItemGeneratorBlock(event.getBlockPlaced(), generatedItem, interval, quantity);
                 GeneratorManager.addGenerator(generator);
             }
         }
@@ -48,8 +48,9 @@ public class GeneratorBlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         if (    GeneratorManager.isGenerator(block)
-                && (!GeneratorInteractions.CAN_BREAK.getConfigValue()
-                || !Permissions.BREAK.has(player))) {
+                && !GeneratorInteractions.CAN_BREAK.getConfigValue()
+                && !Permissions.BREAK.has(player)) {
+            Utilities.warnPlayer(player, Messages.NO_PERMISSION.getValue());
             event.setCancelled(true);
             return;
         }

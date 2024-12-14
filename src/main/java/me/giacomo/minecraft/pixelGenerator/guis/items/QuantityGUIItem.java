@@ -1,7 +1,7 @@
 package me.giacomo.minecraft.pixelGenerator.guis.items;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,7 +10,7 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class QuantityGUIItem extends AbstractGUIItem {
 
-    public QuantityGUIItem(GeneratorBlock generator) {
+    public QuantityGUIItem(AbstractGeneratorBlock generator) {
         super(generator);
     }
 

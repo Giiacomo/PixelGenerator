@@ -47,12 +47,12 @@ public class GeneratorCommand implements CommandExecutor {
 
         }
 
+
     private void handleCreateCommand(Player player, String[] args) {
         if (!player.hasPermission("pixelgenerator.create")) {
             sendNoPermission(player);
             return;
         }
-
 
         if (args.length < 5) {
             Utilities.warnPlayer(player, "Usage: /generator create <block> <material> <quantity> <interval>");
@@ -81,6 +81,7 @@ public class GeneratorCommand implements CommandExecutor {
         player.getInventory().addItem(generatorItem);
         Utilities.informPlayer(player, Messages.PLAYER_RECEIVE_GENERATOR.getValue());
     }
+
 
     private void handleListCommand(Player player) {
         if (!player.hasPermission("pixelgenerator.list")) {

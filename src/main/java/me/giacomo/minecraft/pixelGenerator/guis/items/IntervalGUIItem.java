@@ -1,21 +1,17 @@
 package me.giacomo.minecraft.pixelGenerator.guis.items;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.jetbrains.annotations.NotNull;
 import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.AbstractItem;
 
 public class IntervalGUIItem extends AbstractGUIItem {
 
 
-    public IntervalGUIItem(GeneratorBlock generator) {
+    public IntervalGUIItem(AbstractGeneratorBlock generator) {
         super(generator);
     }
 

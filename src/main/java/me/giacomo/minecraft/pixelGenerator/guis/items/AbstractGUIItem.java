@@ -1,20 +1,16 @@
 package me.giacomo.minecraft.pixelGenerator.guis.items;
 
-import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
-import org.bukkit.Material;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.AbstractItem;
 
 public abstract class AbstractGUIItem extends AbstractItem {
-        protected final GeneratorBlock generator;
+        protected final AbstractGeneratorBlock generator;
 
-        public AbstractGUIItem(GeneratorBlock generator) {
+        public AbstractGUIItem(AbstractGeneratorBlock generator) {
             this.generator = generator;
         }
 

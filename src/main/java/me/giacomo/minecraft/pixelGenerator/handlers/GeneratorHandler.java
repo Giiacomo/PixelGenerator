@@ -1,7 +1,7 @@
 package me.giacomo.minecraft.pixelGenerator.handlers;
 
 import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
-import me.giacomo.minecraft.pixelGenerator.generators.GeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorItem;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
@@ -36,7 +36,7 @@ public class GeneratorHandler {
     public static void handlePistonInteractions(List<Block> blocks, BlockFace direction) {
         for (Block block : blocks) {
             if (GeneratorManager.isGenerator(block)) {
-                GeneratorBlock generatorBlock = GeneratorManager.findByBlock(block);
+                AbstractGeneratorBlock generatorBlock = GeneratorManager.findByBlock(block);
 
                 if (generatorBlock != null) {
                     Block newBlock = block.getRelative(direction);

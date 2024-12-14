@@ -1,4 +1,4 @@
-plugin-prefix: "&7[&aPixel&fGenerator&7] &8"
+plugin-prefix: "&7[&bPixel&fGenerator&7] &8"
 
 generators-interactions:
     can-break: false
@@ -18,3 +18,12 @@ gui:
         quantity-item:
             item: GLOWSTONE_DUST
             name: Quantity
+
+custom-items:
+    - item1:
+        name: Custom item example
+        lore-lines:
+            - lore line 1
+            - lore line 2
+            - lone line 3
+        material: DIAMOND

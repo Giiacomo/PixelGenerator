@@ -15,7 +15,7 @@ permissions:
     default: true
   pixelgenerator.break:
     description: Allow destroying generator blocks.
-    default: true
+    default: false
   pixelgenerator.interact:
     description: Allow interacting with generator blocks.
     default: false

@@ -8,6 +8,7 @@ import org.bukkit.permissions.Permission;
 public enum Permissions {
     ADMIN_CREATE("pixelgenerator.admin.create"),
     PLACE("pixelgenerator.place"),
+    INTERACT("pixelgenerator.interact"),
     BREAK("pixelgenerator.break"),
     ADMIN_LIST("pixelgenerator.admin.list"),
     ADMIN_DEBUG("pixelgenerator.admin.debug"),
@@ -24,7 +25,7 @@ public enum Permissions {
     }
 
     public boolean has(Player player) {
-        return player.hasPermission(permissionKey);
+        return player.isOp() || player.hasPermission(permissionKey);
     }
 
     public Permission getPermission() {
