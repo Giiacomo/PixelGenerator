@@ -5,15 +5,23 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.helpers.GeneratorTaskScheduler;
+import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
+import me.giacomo.minecraft.pixelGenerator.helpers.enums.ActionSounds;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.Arrays;
 
 public abstract class AbstractGeneratorBlock<T> {
 
     protected static final float holoXOffset = 0.5f;
-    protected static final float holoYOffset = 1.5f;
+    protected static final float holoYOffset = 1.75f;
     protected static final float holoZOffset = 0.5f;
+    protected static final float VISIBILITY_RADIUS = 6f;
 
     protected Block block;
     protected T itemToGenerate;
@@ -23,14 +31,65 @@ public abstract class AbstractGeneratorBlock<T> {
     protected BukkitTask task;
     protected Hologram hologram;
 
+    protected ActionSounds sound;
+
     public AbstractGeneratorBlock(Block blockType, T itemToGenerate, int interval, int quantity) {
         this.block = blockType;
         this.itemToGenerate = itemToGenerate;
         this.quantity = quantity;
         this.interval = interval;
 
+        this.sound = ActionSounds.GENERATOR_1;
+
         this.hologram = DHAPI.createHologram(getHoloName(), this.getBlock().getLocation().add(holoXOffset,holoYOffset, holoZOffset));
-        this.updateHologramText();
+        this.hologram.setDefaultVisibleState(false); // Nascondi a tutti per default
+        addHoloLines();
+
+        startVisibilityUpdater();
+    }
+
+    public ActionSounds getSound() {
+        return sound;
+    }
+
+    public void setSound(ActionSounds sound) {
+        this.sound = sound;
+    }
+
+    public void playSound(Player player) {
+        Utilities.playSound(sound, player);
+    }
+
+    public void playSoundToNearbyPlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            double distance = player.getLocation().distance(block.getLocation());
+            if (distance <= VISIBILITY_RADIUS) {
+                playSound(player);
+            }
+        }
+    }
+
+    private void startVisibilityUpdater() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!block.getChunk().isLoaded()) return;
+                if (hologram == null) return;
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    double distance = player.getLocation().distance(block.getLocation());
+                    if (distance <= VISIBILITY_RADIUS) {
+                        hologram.setShowPlayer(player);
+                    } else {
+                        hologram.removeShowPlayer(player);
+                    }
+                }
+            }
+        }.runTaskTimer(PixelGenerator.getInstance(), 0L, 20L);
+    }
+
+    private void addHoloLines () {
+        DHAPI.addHologramLine(hologram, "");
+        DHAPI.addHologramLine(hologram, "");
     }
 
     public T getItemToGenerate() {
@@ -55,22 +114,15 @@ public abstract class AbstractGeneratorBlock<T> {
         DHAPI.removeHologram(hologram.getName());
     }
 
-    public void updateHologramText() {
-        DHAPI.removeHologramLine(hologram, 0);
-        DHAPI.addHologramLine(hologram, toString());
-    }
 
     public String getItemToGenerateFormatted() {
         return getItemToGenerateName().replace("_", " ");
     }
 
-    public String getDynamicHologramText(String s) {
-        return "&f" + this.getQuantity() + " &f- &b" + this.getItemToGenerateFormatted() + " &f-&6 " + s + "&fs";
-    }
 
     public void updateHologramText(String s) {
-        //DHAPI.removeHologramLine(hologram, 0);
-        DHAPI.setHologramLine(hologram, 0, getDynamicHologramText(s));
+        DHAPI.setHologramLine(hologram, 0, "&b" + this.getQuantity() + " &f* &b" + this.getItemToGenerateFormatted());
+        DHAPI.setHologramLine(hologram, 1, "&6"+ s + "&fs");
     }
 
     public GeneratorTaskScheduler getScheduleGenerationTask() {

@@ -4,6 +4,7 @@ import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.guis.items.IntervalGUIItem;
 import me.giacomo.minecraft.pixelGenerator.guis.items.QuantityGUIItem;
+import me.giacomo.minecraft.pixelGenerator.guis.items.SoundGUIItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import xyz.xenondevs.invui.gui.Gui;
@@ -21,12 +22,13 @@ public class DefaultGUIWindow {
         Gui gui = Gui.normal() // Creates the GuiBuilder for a normal GUI
                 .setStructure(
                         "# # # # # # # # #",
-                        "# . I . . . Q . #",
+                        "# . I . S . Q . #",
                         "# # # # # # # # #"
                 )
                 .addIngredient('#', new SimpleItem(new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)))
                 .addIngredient('I', new IntervalGUIItem(generator))
                 .addIngredient('Q', new QuantityGUIItem(generator))
+                .addIngredient('S', new SoundGUIItem(generator))
                 .build();
         Window window = Window.single()
                 .setViewer(player)

@@ -6,6 +6,10 @@ public enum ActionSounds {
     SELECT,
     CLICK,
     POP,
+    GENERATOR_1,
+    GENERATOR_2,
+    GENERATOR_3,
+    GENERATOR_4,
     BREAK,
     ERROR
 }

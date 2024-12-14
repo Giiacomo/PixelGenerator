@@ -1,5 +1,6 @@
 package me.giacomo.minecraft.pixelGenerator.generators.generatorblocks;
 
+import me.giacomo.minecraft.pixelGenerator.generators.items.GenerableItemManager;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,7 @@ public class CustomItemGeneratorBlock extends AbstractGeneratorBlock<ItemStack> 
 
     @Override
     public String getItemToGenerateName() {
-        return itemToGenerate.getItemMeta().getLore().getLast();
+        return GenerableItemManager.getKey(itemToGenerate);
     }
 
     @Override
@@ -25,6 +26,7 @@ public class CustomItemGeneratorBlock extends AbstractGeneratorBlock<ItemStack> 
         World world = block.getWorld();
         ItemStack itemToDrop = itemToGenerate.clone();
         itemToDrop.setAmount(quantity);
-        world.dropItemNaturally(block.getLocation(), itemToDrop);
+        world.dropItem(block.getLocation().add(0.5,1,0.5), itemToDrop);
+        playSoundToNearbyPlayers();
     }
 }

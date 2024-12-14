@@ -1,11 +1,13 @@
 package me.giacomo.minecraft.pixelGenerator.generators;
 
+import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.CustomItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.items.GenerableItemManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -16,9 +18,9 @@ import java.util.Arrays;
 
 public class GeneratorItem {
 
-    public static final NamespacedKey itemKey = new NamespacedKey("generator", "item");
-    public static final NamespacedKey intervalKey = new NamespacedKey("generator", "interval");
-    public static final NamespacedKey quantityKey = new NamespacedKey("generator", "quantity");
+    public static final NamespacedKey itemKey = new NamespacedKey(PixelGenerator.getInstance(), "item");
+    public static final NamespacedKey intervalKey = new NamespacedKey(PixelGenerator.getInstance(), "interval");
+    public static final NamespacedKey quantityKey = new NamespacedKey(PixelGenerator.getInstance(), "quantity");
 
 
     public static ItemStack createGeneratorItem(String block, String itemName, int interval, int quantity) throws MaterialNotBlockException, IllegalArgumentException {
@@ -31,8 +33,11 @@ public class GeneratorItem {
         ItemStack customItem = null;
         if (itemMaterial == null) {
             customItem = GenerableItemManager.getItem(itemName);
+            Bukkit.getLogger().severe(customItem.getItemMeta().getDisplayName());
+            Bukkit.getLogger().severe(GenerableItemManager.getKey(customItem));
             if (customItem == null)
                 throw new IllegalArgumentException(Messages.INVALID_ITEM_EXCEPTION.getValue() + ": " + itemName);
+            else itemName = GenerableItemManager.getKey(customItem);
         }
 
         if (interval <= 0 || quantity <= 0)

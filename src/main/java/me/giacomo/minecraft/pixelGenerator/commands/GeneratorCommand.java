@@ -72,6 +72,7 @@ public class GeneratorCommand implements CommandExecutor {
         } catch (MaterialNotBlockException | IllegalArgumentException e) {
             Utilities.warnPlayer(player, e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace();
             Utilities.warnPlayer(player, Messages.DEFAULT_ERROR.getValue());
         }
 

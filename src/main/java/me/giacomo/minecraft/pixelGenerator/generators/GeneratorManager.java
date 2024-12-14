@@ -44,9 +44,6 @@ public class GeneratorManager {
                 addGenerator(generatorBlock);
             } else {
                 ItemStack itemToGenerate = GenerableItemManager.getItem(generator.getMaterial());
-                PixelGenerator.getInstance().getLogger().info(generator.getMaterial());
-                GenerableItemManager.getAllItemNames().forEach(PixelGenerator.getInstance().getLogger()::info);
-                PixelGenerator.getInstance().getLogger().info(itemToGenerate.toString());
                 AbstractGeneratorBlock<ItemStack> generatorBlock = new CustomItemGeneratorBlock(block, itemToGenerate, interval, quantity);
                 addGenerator(generatorBlock);
             }

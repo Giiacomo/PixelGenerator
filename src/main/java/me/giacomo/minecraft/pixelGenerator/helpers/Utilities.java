@@ -117,6 +117,18 @@ public final class Utilities {
             case POP:
                 Sounds.CHICKEN_EGG_POP.playSound(player);
                 break;
+            case GENERATOR_1:
+                Sounds.CHICKEN_EGG_POP.playSound(player);
+                break;
+            case GENERATOR_2:
+                Sounds.NOTE_PIANO.playSound(player);
+                break;
+            case GENERATOR_3:
+                Sounds.FIREWORK_LARGE_BLAST.playSound(player);
+                break;
+            case GENERATOR_4:
+                Sounds.CAT_MEOW.playSound(player);
+                break;
             case BREAK:
                 Sounds.ANVIL_LAND.playSound(player);
                 break;

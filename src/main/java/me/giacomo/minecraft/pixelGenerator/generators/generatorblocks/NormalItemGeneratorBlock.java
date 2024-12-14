@@ -27,5 +27,6 @@ public class NormalItemGeneratorBlock extends AbstractGeneratorBlock<Material> {
     @Override
     public void generateItem() {
         this.block.getWorld().dropItem(block.getLocation().add(0.5,1,0.5), new ItemStack(itemToGenerate, quantity));
+        playSoundToNearbyPlayers();
     }
 }

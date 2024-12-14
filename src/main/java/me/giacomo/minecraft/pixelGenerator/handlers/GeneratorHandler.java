@@ -9,6 +9,7 @@ import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItem
 import me.giacomo.minecraft.pixelGenerator.generators.items.GenerableItemManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -41,6 +42,8 @@ public class GeneratorHandler {
 
     private static void handleCustomItemGeneratorPlacement(Block block, String customItem, int interval, int quantity) {
         ItemStack generatedItem = GenerableItemManager.getItem(customItem);
+        Bukkit.getLogger().severe(customItem);
+        Bukkit.getLogger().severe(generatedItem.getItemMeta().getDisplayName());
         AbstractGeneratorBlock<ItemStack> generator = new CustomItemGeneratorBlock(block, generatedItem, interval, quantity);
         GeneratorManager.addGenerator(generator);
     }
