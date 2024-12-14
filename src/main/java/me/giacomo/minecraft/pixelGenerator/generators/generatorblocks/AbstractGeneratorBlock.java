@@ -60,7 +60,9 @@ public abstract class AbstractGeneratorBlock<T> {
         DHAPI.addHologramLine(hologram, toString());
     }
 
-    public abstract String getItemToGenerateFormatted();
+    public String getItemToGenerateFormatted() {
+        return getItemToGenerateName().replace("_", " ");
+    }
 
     public String getDynamicHologramText(String s) {
         return "&f" + this.getQuantity() + " &f- &b" + this.getItemToGenerateFormatted() + " &f-&6 " + s + "&fs";

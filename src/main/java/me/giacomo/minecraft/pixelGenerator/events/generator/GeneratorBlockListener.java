@@ -25,6 +25,7 @@ public class GeneratorBlockListener implements Listener {
     @EventHandler
     public void onGeneratorPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
+        Block block = event.getBlock();
         if (!Permissions.PLACE.has(player))
             return;
 
@@ -32,13 +33,8 @@ public class GeneratorBlockListener implements Listener {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
 
-            if (meta.hasDisplayName() && meta.getDisplayName().equals(Messages.ITEM_GENERATOR_NAME.getValue())) {
-                Material generatedItem = Material.getMaterial(meta.getPersistentDataContainer().get(GeneratorItem.itemKey, PersistentDataType.STRING));
-                Integer interval = meta.getPersistentDataContainer().get(GeneratorItem.intervalKey, PersistentDataType.INTEGER);
-                Integer quantity = meta.getPersistentDataContainer().get(GeneratorItem.quantityKey, PersistentDataType.INTEGER);
-                Utilities.informPlayer(event.getPlayer(), Messages.PLAYER_PLACE_GENERATOR.getValue());
-                AbstractGeneratorBlock<Material> generator = new NormalItemGeneratorBlock(event.getBlockPlaced(), generatedItem, interval, quantity);
-                GeneratorManager.addGenerator(generator);
+            if (meta.getPersistentDataContainer().get(GeneratorItem.itemKey, PersistentDataType.STRING) != null) {
+                GeneratorHandler.handleGeneratorPlacement(block, player, meta);
             }
         }
     }

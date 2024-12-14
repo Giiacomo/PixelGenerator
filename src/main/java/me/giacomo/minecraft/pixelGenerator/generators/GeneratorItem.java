@@ -4,6 +4,7 @@ import me.giacomo.minecraft.pixelGenerator.exceptions.MaterialNotBlockException;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.CustomItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItemGeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.items.GenerableItemManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -27,10 +28,11 @@ public class GeneratorItem {
         if (blockMaterial == null || blockMaterial == Material.AIR) {
             throw new IllegalArgumentException(Messages.INVALID_BLOCK_EXCEPTION.getValue() + ": " + block);
         }
-
+        ItemStack customItem = null;
         if (itemMaterial == null) {
-
-            throw new IllegalArgumentException(Messages.INVALID_ITEM_EXCEPTION.getValue() + ": " + itemName);
+            customItem = GenerableItemManager.getItem(itemName);
+            if (customItem == null)
+                throw new IllegalArgumentException(Messages.INVALID_ITEM_EXCEPTION.getValue() + ": " + itemName);
         }
 
         if (interval <= 0 || quantity <= 0)
@@ -64,7 +66,6 @@ public class GeneratorItem {
                     normalGenerator.getQuantity()
             );
         } else if (generatorBlock instanceof CustomItemGeneratorBlock customGenerator) {
-            // Casting esplicito e sicuro
             return createGeneratorItem(
                     customGenerator.getBlock().getType().name(),
                     customGenerator.getItemToGenerateName(),

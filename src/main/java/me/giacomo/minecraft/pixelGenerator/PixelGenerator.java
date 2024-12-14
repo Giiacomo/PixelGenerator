@@ -6,6 +6,7 @@ import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorBlockListen
 import me.giacomo.minecraft.pixelGenerator.events.generator.GeneratorDamageListener;
 import me.giacomo.minecraft.pixelGenerator.events.generator.PlayerInteractionListener;
 import me.giacomo.minecraft.pixelGenerator.generators.GeneratorManager;
+import me.giacomo.minecraft.pixelGenerator.generators.items.GenerableItemManager;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,19 +25,17 @@ public final class PixelGenerator extends JavaPlugin {
     private GeneratorDB generatorDB;
     private static PixelGenerator instance;
     private static GeneratorManager manager;
-    // chat messages
     private static Map<String, String> phrases = new HashMap<>();
 
-    // core settings
-    public static String prefix = "&c&l[&5&lPixelGenerator&c&l] &8&l"; // generally unchanged unless otherwise stated in config
+    public static String prefix = "&f[&bPixel&fGenerator] &8";
     public static String consolePrefix = "[PixelGenerator] ";
     public static String hologramPrefix = "pixelgenoholos_";
-    // customizable settings
     public static boolean customSetting = false;
 
     @Override
     public void onEnable() {
         instance = this;
+        loadConfiguration();
 
         if (!Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
             getLogger().severe("*** HolographicDisplays is not installed or not enabled. ***");
@@ -45,7 +44,6 @@ public final class PixelGenerator extends JavaPlugin {
             return;
         }
 
-        loadConfiguration();
 
         try {
             generatorDB = new GeneratorDB(getDataFolder().getAbsolutePath() + "/data.db");
@@ -62,15 +60,12 @@ public final class PixelGenerator extends JavaPlugin {
         registerCommands();
         registerEvents();
 
-        // posts confirmation in chat
         getLogger().info(getDescription().getName() + " V: " + getDescription().getVersion() + " has been enabled");
-
 
     }
 
     @Override
     public void onDisable() {
-        // posts exit message in chat
         getLogger().info(getDescription().getName() + " V: " + getDescription().getVersion() + " has been disabled");
     }
 
@@ -94,6 +89,8 @@ public final class PixelGenerator extends JavaPlugin {
 
         FileConfiguration config = this.getConfig();
         prefix = ChatColor.translateAlternateColorCodes('&', config.getString("plugin-prefix"));
+
+        GenerableItemManager.loadGenerableItems();
 
         getLogger().info(consolePrefix + "Settings Reloaded from config");
     }

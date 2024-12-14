@@ -3,11 +3,14 @@ package me.giacomo.minecraft.pixelGenerator.generators;
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.db.GeneratorDB;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.AbstractGeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.CustomItemGeneratorBlock;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.NormalItemGeneratorBlock;
+import me.giacomo.minecraft.pixelGenerator.generators.items.GenerableItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -28,7 +31,6 @@ public class GeneratorManager {
         savedGenerators.forEach(generator -> {
             World world = Bukkit.getWorld(generator.getWorld());
             Block block = world.getBlockAt(generator.getX(), generator.getY(), generator.getZ());
-            Material material = Material.getMaterial(generator.getMaterial());
             Material blockMaterial = Material.getMaterial(generator.getBlockMaterial());
             int interval = generator.getInterval();
             int quantity = generator.getQuantity();
@@ -36,16 +38,25 @@ public class GeneratorManager {
             if (!block.getType().equals(blockMaterial)) {
                 block.setType(blockMaterial);
             }
-
-            AbstractGeneratorBlock<Material> generatorBlock = new NormalItemGeneratorBlock(block, material, interval, quantity);
-            addGenerator(generatorBlock);
+            Material material = Material.getMaterial(generator.getMaterial());
+            if (material != null) {
+                AbstractGeneratorBlock<Material> generatorBlock = new NormalItemGeneratorBlock(block, material, interval, quantity);
+                addGenerator(generatorBlock);
+            } else {
+                ItemStack itemToGenerate = GenerableItemManager.getItem(generator.getMaterial());
+                PixelGenerator.getInstance().getLogger().info(generator.getMaterial());
+                GenerableItemManager.getAllItemNames().forEach(PixelGenerator.getInstance().getLogger()::info);
+                PixelGenerator.getInstance().getLogger().info(itemToGenerate.toString());
+                AbstractGeneratorBlock<ItemStack> generatorBlock = new CustomItemGeneratorBlock(block, itemToGenerate, interval, quantity);
+                addGenerator(generatorBlock);
+            }
 
         });
 
     }
 
 
-    public static void addGenerator(AbstractGeneratorBlock generator) {
+    public static <T> void addGenerator(AbstractGeneratorBlock<T> generator) {
         if (!generators.containsKey(generator.getBlock())) {
 
             try {

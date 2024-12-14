@@ -20,7 +20,7 @@ gui:
             name: Quantity
 
 custom-items:
-    - item1:
+    item1:
         name: Custom item example
         lore-lines:
             - lore line 1
