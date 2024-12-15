@@ -34,7 +34,7 @@ public class GeneratorHandler {
         if (generatedItem == null) {
             handleCustomItemGeneratorPlacement(block, materialStr, interval, quantity);
         } else {
-            AbstractGeneratorBlock<Material> generator = new NormalItemGeneratorBlock(block, generatedItem, interval, quantity);
+            AbstractGeneratorBlock generator = new NormalItemGeneratorBlock(block, generatedItem, interval, quantity);
             GeneratorManager.addGenerator(generator);
         }
         Utilities.informPlayer(player, Messages.PLAYER_PLACE_GENERATOR.getValue());
@@ -44,7 +44,7 @@ public class GeneratorHandler {
         ItemStack generatedItem = GenerableItemManager.getItem(customItem);
         Bukkit.getLogger().severe(customItem);
         Bukkit.getLogger().severe(generatedItem.getItemMeta().getDisplayName());
-        AbstractGeneratorBlock<ItemStack> generator = new CustomItemGeneratorBlock(block, generatedItem, interval, quantity);
+        AbstractGeneratorBlock generator = new CustomItemGeneratorBlock(block, generatedItem, interval, quantity);
         GeneratorManager.addGenerator(generator);
     }
 

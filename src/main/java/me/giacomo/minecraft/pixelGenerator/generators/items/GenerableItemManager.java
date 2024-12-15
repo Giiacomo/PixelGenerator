@@ -2,6 +2,7 @@ package me.giacomo.minecraft.pixelGenerator.generators.items;
 
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,8 +28,9 @@ public class GenerableItemManager {
                 String path = "custom-items." + key;
 
                 String name = config.getString(path + ".name", "Unnamed Item");
-
+                name = ChatColor.translateAlternateColorCodes('&', name);
                 List<String> lore = config.getStringList(path + ".lore-lines");
+                lore.forEach(ll -> ll = ChatColor.translateAlternateColorCodes('&', ll));
                 String material = config.getString(path + ".material", "DIAMOND");
                 ItemStack item = new ItemBuilder(Material.getMaterial(material))
                         .setDisplayName(name)

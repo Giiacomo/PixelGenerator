@@ -1,7 +1,16 @@
 plugin-prefix: "&7[&bPixel&fGenerator&7] &8"
 
-generators-info:
-    generation-activation-range: 40
+generator-drop:
+    on-place: false #naturally or on-place
+
+generator-holo:
+    visible: false
+    hologram-item: true
+
+
+generator-ranges:
+    activation-range: 40
+    visibility-range: 6
 
 generators-interactions:
     can-break: false

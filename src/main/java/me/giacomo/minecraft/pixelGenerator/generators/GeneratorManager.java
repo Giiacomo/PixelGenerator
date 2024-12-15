@@ -55,7 +55,7 @@ public class GeneratorManager {
     }
 
 
-    public static <T> void addGenerator(AbstractGeneratorBlock<T> generator) {
+    public static void addGenerator(AbstractGeneratorBlock generator) {
         if (!generators.containsKey(generator.getBlock())) {
 
             try {

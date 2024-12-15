@@ -62,7 +62,7 @@ public class GeneratorItem {
         return item;
     }
 
-    public static <T> ItemStack createGeneratorItemFromGeneratorBlock(AbstractGeneratorBlock<T> generatorBlock) throws MaterialNotBlockException {
+    public static ItemStack createGeneratorItemFromGeneratorBlock(AbstractGeneratorBlock generatorBlock) throws MaterialNotBlockException {
         if (generatorBlock instanceof NormalItemGeneratorBlock normalGenerator) {
             return createGeneratorItem(
                     normalGenerator.getBlock().getType().name(),
