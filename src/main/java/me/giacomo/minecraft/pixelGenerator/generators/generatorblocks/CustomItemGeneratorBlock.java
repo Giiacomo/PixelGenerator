@@ -14,6 +14,7 @@ public class CustomItemGeneratorBlock extends AbstractGeneratorBlock {
 
     public CustomItemGeneratorBlock(Block blockType, ItemStack itemToGenerate, int interval, int quantity) {
         super(blockType, interval, quantity);
+        this.itemToGenerate = itemToGenerate;
     }
 
     public ItemStack getItemToGenerate() {

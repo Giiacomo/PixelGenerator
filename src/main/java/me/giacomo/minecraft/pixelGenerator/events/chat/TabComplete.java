@@ -27,10 +27,9 @@ public class TabComplete implements TabCompleter {
 
                 Iterator<String> iter = arguments.iterator(); while (iter.hasNext()) { String str = iter.next().toLowerCase(); if (!str.contains(args[0].toLowerCase())) iter.remove(); }
             }
-            if (args.length == 3 && args[0].equals("create")) {
+            if (args.length == 3 && args[0].equalsIgnoreCase("create")) {
                 arguments.addAll(GenerableItemManager.getAllItemNames());
-
-                Iterator<String> iter = arguments.iterator(); while (iter.hasNext()) { String str = iter.next().toLowerCase(); if (!str.contains(args[1].toLowerCase())) iter.remove(); }
+                arguments.removeIf(str -> !str.toLowerCase().contains(args[2].toLowerCase()));
             }
         }
 
