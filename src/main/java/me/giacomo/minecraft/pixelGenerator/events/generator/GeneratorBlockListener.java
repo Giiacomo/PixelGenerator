@@ -10,6 +10,7 @@ import me.giacomo.minecraft.pixelGenerator.helpers.enums.GeneratorInteractions;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Messages;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.Permissions;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -54,4 +56,5 @@ public class GeneratorBlockListener implements Listener {
         GeneratorHandler.handleDestroyGenerator(block, player);
         event.setDropItems(false);
     }
+
 }

@@ -99,41 +99,54 @@ public abstract class AbstractGeneratorBlock {
             DHAPI.setHologramLine(hologram, 1, getItemToGenerateMaterial());
             DHAPI.setHologramLine(hologram, 0,  "&b" + getQuantity() + " &f* &6"+ s + "&fs");
         } else {
-            DHAPI.setHologramLine(hologram, 0, "&b" + getQuantity() + "&f* &b" + getItemToGenerateFormatted());
-            DHAPI.setHologramLine(hologram, 1, "&6"+ s + "&fs");
+            DHAPI.setHologramLine(hologram, 1, "&b" + getQuantity() + "&f* &b" + getItemToGenerateFormatted());
+            DHAPI.setHologramLine(hologram, 0, "&6"+ s + "&fs");
         }
     }
 
-    public GeneratorTaskScheduler getScheduleGenerationTask() {
-        Runnable task = new Runnable() {
-            protected long timeRemaining = 20L * getInterval();
+    public void setHologramReactivatingMessage() {
+        DHAPI.setHologramLine(hologram, 0, "Reactivating generator...");
+    }
 
+    public GeneratorTaskScheduler getScheduleGenerationTask() {
+        return new GeneratorTaskScheduler(new Runnable() {
+            private long lastRunTime = System.currentTimeMillis();
+            private long timeRemaining = getInterval() * 1000L;
+            private long nextCheckTime = 0;
             @Override
             public void run() {
-                if (!block.getChunk().isLoaded()) {
-                    PixelGenerator.getInstance().getServer().getScheduler().runTaskLater(
-                            PixelGenerator.getInstance(),
-                            this,
-                            200L
-                    );
+                long now = System.currentTimeMillis(); //ms
+
+
+                if (now < nextCheckTime) {
                     return;
                 }
 
-                if (!visibility.isAnyoneInGenerationRange()) {
+                if (!visibility.isAnyoneInGenerationRange() || !block.getChunk().isLoaded()) {
+                    nextCheckTime = now + 10 * 1000; // make 10 configurable
+                    setHologramReactivatingMessage();
                     return;
                 }
 
-                if (timeRemaining > 0) {
-                    timeRemaining -= 20;
-                } else {
+                if (lastRunTime < nextCheckTime - 10 * 1000) {
+                    timeRemaining = getInterval() * 1000L;
+                    lastRunTime = now;
+                    return;
+                }
+                long elapsedTime = now - lastRunTime;
+                timeRemaining -= elapsedTime;
+
+                if (timeRemaining <= 0) {
                     generateItem();
-                    timeRemaining = 20L * getInterval();
+                    timeRemaining = getInterval() * 1000L;
                 }
-                if (hologram != null)
-                    updateHologramText(String.valueOf(timeRemaining / 20));
+
+                lastRunTime = now;
+                if (hologram != null) {
+                    updateHologramText(String.valueOf(timeRemaining / 1000));
+                }
             }
-        };
-        return new GeneratorTaskScheduler(task, 0L, 20L);
+        }, 0L, 20L);
     }
 
     public void setTask(BukkitTask task) {
