@@ -117,18 +117,28 @@ public abstract class AbstractGeneratorBlock {
             private long nextCheckTime = 0;
             private int timeToReactivate = PixelGenerator.getInstance().getConfig().getInt("generator-ranges.time-to-reactivate");
             private final boolean canGeneratorsDisable = PixelGenerator.getInstance().getConfig().getBoolean("generator-ranges.out-of-range-disable");
+            private boolean isGeneratorOn = false;
             @Override
             public void run() {
                 long now = System.currentTimeMillis(); //ms
-                if (now < nextCheckTime) {
-                    return;
-                }
-                if (canGeneratorsDisable && (!visibility.isAnyoneInGenerationRange() || !block.getChunk().isLoaded())) {
+                if (now > nextCheckTime) {
                     nextCheckTime = now + timeToReactivate * 1000L;
-                    if (hologram != null)
-                        setHologramReactivatingMessage();
-                    return;
+                    if (now < nextCheckTime) {
+                        isGeneratorOn = visibility.isAnyoneInGenerationRange() && block.getChunk().isLoaded();
+
+                        if (canGeneratorsDisable)
+                            if (!isGeneratorOn) {
+                                if (hologram != null) {
+                                    setHologramReactivatingMessage();
+                                }
+                                return;
+                            }
+                    }
+                } else {
+                    if (!isGeneratorOn)
+                        return;
                 }
+                Bukkit.getLogger().info("11" + isGeneratorOn);
 
                 if (!PixelGenerator.getInstance().getConfig().getBoolean("generator-ranges.remember-time-remaining") && lastRunTime < nextCheckTime - 10 * 1000) {
                     timeRemaining = getInterval() * 1000L;
