@@ -37,6 +37,8 @@ public abstract class AbstractGeneratorBlock {
 
     protected VisibilityManager visibility;
 
+
+
     public AbstractGeneratorBlock(Block blockType, int interval, int quantity) {
         this.block = blockType;
         this.quantity = quantity;
@@ -113,30 +115,32 @@ public abstract class AbstractGeneratorBlock {
             private long lastRunTime = System.currentTimeMillis();
             private long timeRemaining = getInterval() * 1000L;
             private long nextCheckTime = 0;
+            private int timeToReactivate = PixelGenerator.getInstance().getConfig().getInt("generator-ranges.time-to-reactivate");
+            private final boolean canGeneratorsDisable = PixelGenerator.getInstance().getConfig().getBoolean("generator-ranges.out-of-range-disable");
             @Override
             public void run() {
                 long now = System.currentTimeMillis(); //ms
-
-
                 if (now < nextCheckTime) {
                     return;
                 }
-
-                if (!visibility.isAnyoneInGenerationRange() || !block.getChunk().isLoaded()) {
-                    nextCheckTime = now + 10 * 1000; // make 10 configurable
-                    setHologramReactivatingMessage();
+                if (canGeneratorsDisable && (!visibility.isAnyoneInGenerationRange() || !block.getChunk().isLoaded())) {
+                    nextCheckTime = now + timeToReactivate * 1000L;
+                    if (hologram != null)
+                        setHologramReactivatingMessage();
                     return;
                 }
 
-                if (lastRunTime < nextCheckTime - 10 * 1000) {
+                if (!PixelGenerator.getInstance().getConfig().getBoolean("generator-ranges.remember-time-remaining") && lastRunTime < nextCheckTime - 10 * 1000) {
                     timeRemaining = getInterval() * 1000L;
                     lastRunTime = now;
                     return;
                 }
-                long elapsedTime = now - lastRunTime;
-                timeRemaining -= elapsedTime;
 
-                if (timeRemaining <= 0) {
+                long elapsedTime = now - lastRunTime;
+
+                if (timeRemaining > 0)
+                    timeRemaining -= elapsedTime;
+                else {
                     generateItem();
                     timeRemaining = getInterval() * 1000L;
                 }

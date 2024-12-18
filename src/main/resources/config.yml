@@ -1,5 +1,7 @@
 plugin-prefix: "&7[&bPixel&fGenerator&7] &8"
 
+
+
 generator-drop:
     on-place: false #naturally or on-place
 
@@ -9,6 +11,9 @@ generator-holo:
 
 
 generator-ranges:
+    out-of-range-disable: true
+    remember-time-remaining: true
+    time-to-reactivate: 10
     activation-range: 40
     visibility-range: 6
 
