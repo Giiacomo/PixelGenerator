@@ -58,8 +58,7 @@ public class GeneratorTask implements Runnable {
 
     private void updateCheckTime(long now) {
         nextCheckTime = now + timeToReactivateSeconds * 1000L;
-        isGeneratorOn = generatorBlock.getVisibility().isAnyoneInGenerationRange() &&
-                generatorBlock.getBlock().getChunk().isLoaded();
+        isGeneratorOn = generatorBlock.getVisibility().isAnyoneInGenerationRange();
     }
 
     private boolean isGeneratorActive() {

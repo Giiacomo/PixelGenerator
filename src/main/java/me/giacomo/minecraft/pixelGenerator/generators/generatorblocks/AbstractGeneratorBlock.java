@@ -5,7 +5,6 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.giacomo.minecraft.pixelGenerator.PixelGenerator;
 import me.giacomo.minecraft.pixelGenerator.generators.generatorblocks.visibility.VisibilityManager;
-import me.giacomo.minecraft.pixelGenerator.generators.tasks.GeneratorTask;
 import me.giacomo.minecraft.pixelGenerator.helpers.GeneratorTaskScheduler;
 import me.giacomo.minecraft.pixelGenerator.helpers.Utilities;
 import me.giacomo.minecraft.pixelGenerator.helpers.enums.ActionSounds;
@@ -116,7 +115,55 @@ public abstract class AbstractGeneratorBlock {
     }
 
     public GeneratorTaskScheduler getScheduleGenerationTask() {
-        return new GeneratorTaskScheduler(new GeneratorTask(this), 0L, 20L);
+        return new GeneratorTaskScheduler(new Runnable() {
+            private long lastRunTime = System.currentTimeMillis();
+            private long timeRemaining = getInterval() * 1000L;
+            private long nextCheckTime = 0;
+            private int timeToReactivate = PixelGenerator.getInstance().getConfig().getInt("generator-ranges.time-to-reactivate");
+            private final boolean canGeneratorsDisable = PixelGenerator.getInstance().getConfig().getBoolean("generator-ranges.out-of-range-disable");
+            private boolean isGeneratorOn = false;
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis(); //ms
+                if (now > nextCheckTime) {
+                    nextCheckTime = now + timeToReactivate * 1000L;
+                    if (now < nextCheckTime) {
+                        isGeneratorOn = visibility.isAnyoneInGenerationRange() && block.getChunk().isLoaded();
+
+                        if (canGeneratorsDisable)
+                            if (!isGeneratorOn) {
+                                if (hologram != null) {
+                                    setHologramReactivatingMessage();
+                                }
+                                return;
+                            }
+                    }
+                } else {
+                    if (!isGeneratorOn)
+                        return;
+                }
+
+                if (!PixelGenerator.getInstance().getConfig().getBoolean("generator-ranges.remember-time-remaining") && lastRunTime < nextCheckTime - 10 * 1000) {
+                    timeRemaining = getInterval() * 1000L;
+                    lastRunTime = now;
+                    return;
+                }
+
+                long elapsedTime = now - lastRunTime;
+
+                if (timeRemaining > 0)
+                    timeRemaining -= elapsedTime;
+                else {
+                    generateItem();
+                    timeRemaining = getInterval() * 1000L;
+                }
+
+                lastRunTime = now;
+                if (hologram != null) {
+                    updateHologramText(String.valueOf(timeRemaining / 1000));
+                }
+            }
+        }, 0L, 20L);
     }
 
     public void setTask(BukkitTask task) {

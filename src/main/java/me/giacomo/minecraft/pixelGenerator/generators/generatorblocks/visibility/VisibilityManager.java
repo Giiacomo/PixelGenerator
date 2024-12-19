@@ -37,6 +37,7 @@ public class VisibilityManager {
 
             int generatorDistanceX = Math.abs(blockChunkX - playerX);
             int generatorDistanceZ = Math.abs(blockChunkZ - playerZ);
+
             if (generatorDistanceX <= Ranges.ACTIVATION_RANGE.getRange() && generatorDistanceZ <= Ranges.ACTIVATION_RANGE.getRange())
                 return true;
         }
